@@ -60,11 +60,13 @@ The information can be referenced to as
 * an IPFS address or
 * a link to a cloud service plus hash of the content.
 
+In case of using an IPFS address the Delivery Service itself is responsible for pinning the record.
+
 The referenced profile contains the entries:
 
 * **publicMessagingKey** - public key to encrypt the message.
 * **publicSigningKey** - public key for signature verification.
-* **deliveryServiceUrl** - the URL of the delivery service where the user's messages will be sent to. The recipient then picks the messages up from there. Optionally, this can be a list of multiple URLs with fallbacks, if the primary delivery service is not reachable.
+* **deliveryService** - the ENS domain of the delivery service where the user's messages will be sent to. The delivery service's ENS domain has a text record "eth.dm3.deliveryservice" defined which contains the delivery URL or optionally a list of multiple URLs with fallbacks, if the primary delivery service is not reachable. Also, the optional URL to read the mutable configuration settings (like spam protection settings, ...) is given.
 * the **signature** (with the signingKey) for the content above.
 
 Since the setting of this text record is done on-chain, a layer-1 transaction is required for this. Furthermore, in this case it is assumed that the recipient has its own ENS domain to which a dm3 profile is assigned.
@@ -74,7 +76,28 @@ Similarly, other messaging applications that support the dm3 protocol can easily
 
 But even users who do not want to have an ENS domain at all can be included via a special subdomain: _ethaddress.dm3.eth_)
 
-### Delivery Service (mutable ...)
+### Delivery Service
+
+Communication in dm3 is strictly peer-2-peer. A message is sent directly from the sender to the delivery service of the recipient. The content of the message is already encrypted on the client side at the sender with the recipient's public key. The entire message packet (including meta data) is additionally encrypted with the public key of the delivery service.
+The delivery service stores the message until the recipient picks it up or the maximum storage time has expired. Since the message is encrypted and signed by the sender, the delivery service cannot evaluate or modify the content at any time.
+
+```[PIC FLOW/ENCRYPTION]```
+
+As soon as the recipient has picked up a message and confirmed its receipt and saving in the storage, the delivery service deletes it.
+
+Each delivery service also has an ENS domain. With the text record "eth.dm3.deliveryService" the reference to the profile of the delivery service is provided.
+
+The information can be referenced to as
+
+* an IPFS address or
+* a link to a cloud service plus hash of the content.
+
+In case of using an IPFS address the Delivery Service itself is responsible for pinning the record.
+
+The referenced delivery service profile contains the entries:
+
+* **deliveryServiceURL** - the URL to the delivery service
+* **publicKey** - the public encryption key of the delivery service. All packages sent to the delivery service are encrypted with this key.
 
 ### Peer-2-Peer Messaging
 
