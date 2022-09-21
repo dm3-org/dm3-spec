@@ -20,23 +20,59 @@ Another consequence of this is that large email providers only accept emails fro
 
 After 1990 SMS was developed, which made it possible to send short text messages between especially cell phones (device-2-device communication). Despite the rather high price and the drastic limitation of the length (160 characters), the short messages became very popular. Short messages are transmitted unencrypted from the sender's device to the service provider and from there to the recipient. End-to-end encryption is not provided.
 
-### Web2 Approaches
+### Web2 Messengers
 
 In the late 1990s, instant messaging services emerged that made it possible to send direct messages from computer to computer. With the breakthrough of the iPhone and other smartphones at the end of the 2000s and messagers such as WhatsApp, WeChat, Facebook Messenger, Signal, Telegram and many others, these largely replaced SMS, not least because it was possible to send short messages free of charge.
 
 Even though today most messengers promise end-to-end encryption for message transmission, in some cases the encryption may be lifted, e.g. when messages are to be checked for offensive content based on a report of suspicion.
 Although most messengers today have a very similar feature set, cross-platform communication is not possible because each messenger maintains its own community and keeps data in its own silos. Interoperability is currently not possible, although this would be very desirable from the user's point of view.
-Legislative initiatives such as the planned "Digital Markets Act" of the EU as well as various national drafts aim to make such interactions between users of the different platforms possible in the future. The challenge, however, is that the various solutions have each developed their own protocols (with a different focus on security and privacy, for example) and store user data in their individual data centers.
+Legislative initiatives such as the planned "Digital Markets Act" of the EU (see https://lmy.de/XGqOR) as well as various national drafts aim to make such interactions between users of the different platforms possible in the future. The challenge, however, is that the various solutions have each developed their own protocols (with a different focus on security and privacy, for example) and store user data in their individual data centers.
 
 What these solutions also have in common is that they are centralized services. Communication always takes place over the servers of the respective service, just as the data (e.g., chat histories, but also metadata such as connection data) is managed by the service providers. In some cases, users have to make far-reaching concessions regarding their sovereignty (e.g., sharing of contact information, ...).
 
 Often a certain messenger has become established as a quasi-standard in a certain region or user group (e.g. WhatsApp in Europe, WeChat in China, Facebook Messenger in U.S., ...). This then leads to the fact that one must also be registered with this service in order to communicate with friends and acquaintances, since they often use the most common messenger and rarely select the messenger based on its technical performance but rather on the network effect in their circle of acquaintances.
 
+```[PIC DATA-SILOS]```
+
+User administration is carried out as usual with username and password (sometimes including 2FA), whereby the telephone number is often used as user identification. However, this also means that the user profiles are under the control of the service providers.
+
 ### Web3 Approaches
 
-## dm3 MessageingIt is not uncommon for several of these apps to be used in parallel to be in contact with different groups for this reason.
+## dm3 Messageing
+
+The aim of dm3 is to define a messaging protocol which, based on web3 technologies, enables communication to be fully end-to-end encrypted, sufficiently decentralized, and self-determined under the control of the users.
+
+The user must have full control over his data at any time (chat histories, including media files, contact information, ...). He/she should also be free to decide which delivery service to use.
+
+Interoparability is a central goal of the protocol. Users of different messaging applications can communicate with each other, regardless of which application they use, as long as the dm3 protocol is implemented.
+
+```[PIC INTEROPERABILITY]```
 
 ### Registry
+
+In order to implement end-to-end encryption, the sender of the message must know the recipient's public key to encrypt the message. A registry accessible by all users of the protocol is needed to make the public keys as well as the URL of the delivery service to be used accessible.
+
+With ENS (Ethereum Name Service, see https://ens.domains), a decentralized service is available that can manage other records in addition to the assignment of a name (such as dm3.eth) to an address (e.g. Ethereum address).
+The dm3 protocoll uses a text record "eth.dm3.profile" as reference to the dm3 profile of an ENS domain.
+
+The information can be referenced to as
+
+* an IPFS address or
+* a link to a cloud service plus hash of the content.
+
+The referenced profile contains the entries:
+
+* **publicMessagingKey** - public key to encrypt the message.
+* **publicSigningKey** - public key for signature verification.
+* **deliveryServiceUrl** - the URL of the delivery service where the user's messages will be sent to. The recipient then picks the messages up from there. Optionally, this can be a list of multiple URLs with fallbacks, if the primary delivery service is not reachable.
+* the **signature** (with the signingKey) for the content above.
+
+Since the setting of this text record is done on-chain, a layer-1 transaction is required for this. Furthermore, in this case it is assumed that the recipient has its own ENS domain to which a dm3 profile is assigned.
+However, not everyone has his/her own ENS domain or is willing to pay for this transaction. Then it is possible that he/she registers a subdomain of dm3 (e.g. _unique_name.dm3.eth_). The administration of the subdomains is done on layer-2.
+
+Similarly, other messaging applications that support the dm3 protocol can easily implement the registry for their users (if they are not using a direct ENS profile) by resolving them through subdomains of their ENS domain (e.g. __name_or_telephonenumber_.messengerXY.eth_).
+
+But even users who do not want to have an ENS domain at all can be included via a special subdomain: _ethaddress.dm3.eth_)
 
 ### Delivery Service (mutable ...)
 
@@ -67,6 +103,8 @@ Often a certain messenger has become established as a quasi-standard in a certai
 ## dm3 Messenger
 
 ### Message Flow
+
+### Notification
 
 ### Spam protection
 
