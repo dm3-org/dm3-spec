@@ -96,10 +96,41 @@ In case of using an IPFS address the Delivery Service itself is responsible for 
 
 The referenced delivery service profile contains the entries:
 
-* **deliveryServiceURL** - the URL to the delivery service
+* **deliveryServiceUrl** - the URL to the delivery service
 * **publicKey** - the public encryption key of the delivery service. All packages sent to the delivery service are encrypted with this key.
 
+A delivery service can be offered as a cloud service, but every user can also host a delivery service himself, e.g. as an app on his DAppNode. In addition, each user can also use several delivery services as fallbacks, so that he or she can still be reached even if one fails.
+
+```[PIC DELIVERY SERVICES/FLOW]```
+
+This service is thus sufficiently decentralized. Each user can choose which one to use or whether to add additional fallbacks. The delivery of messages cannot be censored, since another delivery service can be used at any time. Likewise, even a compromised delivery service server could neither manipulate messages nor collect a reliable meta data history.
+
+#### Messages to Recipients without dm3 Profile
+
+Messages to recipients who have not yet created a dm3 profile record cannot be delivered, since the public message encryption key is not known and therefore no encryption would be possible, and the delivery service via which the recipient can pick up his messages is also not known. Messages can still be written, but remain with the sender until the recipient has published his profile. Only then it is encrypted and sent to the dedicated delivery service.
+
+To inform the potential recipient that messages are waiting for him/her in dm3, different methods can be used. If an email address or social media handles are published in ENS, those could be contacted with an invite to join dm3. Also, an NFT notification can be sent to the recipient.
+
+#### Spam Reduction
+
+Just as with the transmission of emails, a direct message protocol such as dm3 is likely that a lot of spam could be sent.
+
+In web3, however, there are various ways to counteract this. Similar to web2, a blacklist of known spam addresses can be blocked. A significant advantage, however, is that the sender cannot be manipulated, since the packet sent to the delivery service must be correctly signed.
+
+Furthermore, it can be required that the nonce must be greater than a certain value, which means that transactions have already been sent with the private key associated with this address, i.e. that this address is already in use. This would mean a significantly higher effort for a potential spammer, since he cannot utilize unused addresses.
+
+```[PIC SPAM REDUCTION]```
+
+Moreover, it can be required that the address must hold a minimum amount of Ether or another coin. Additionally, a specified holding period may be required. This can prevent a large number of new addresses from being created and used as senders, as this would require a lot of money to finance these addresses.
+
+These methods can be implemented directly on the delivery service, so that messages that do not meet these criteria are not even accepted and cached.
+
+Further methods for spam protection on the recipient's side are considered below.
+
+The conditions that a message is not immediately discarded as spam by the delivery service can be queried from the mutable configuarion settings.
+
 ### Peer-2-Peer Messaging
+
 
 ### Group-Chat
 
