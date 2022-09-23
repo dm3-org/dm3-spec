@@ -1,11 +1,17 @@
+# Specification: **dm3** Message Transport Protocol
+
 ## Abstract
+
 The specified protocol uses ENS text records in combination with a standardized API to build a federated system of message delivery services allowing to send messages from ENS name to ENS name.
 
+## Motivation
+
 ## Specification
+
 This specification focuses on how to deliver messages to the delivery service defined in the receiver's dm3 profile. dm3 delivery service and app implementations MAY also use the following dm3 protocol extensions:
 
 * [Message Access Specification](): Specifies how received messages on a delivery service can be accessed.
-* [Message Storage Specification](): Specifies how messages are persisted after they are delivered.
+* [Message Storage Specification](storage-specification.md): Specifies how messages are persisted after they are delivered.
 * [Public Message Feed Specification](): Specifies how a public message feed is created and accessed.
 * [Intra Delivery Service Messaging Specification](): Specifies additional features for messaging if sender and receiver are using the same delivery service.
 * [Group Messaging Specification](): Specifies a protocol extension to enable group messaging.
