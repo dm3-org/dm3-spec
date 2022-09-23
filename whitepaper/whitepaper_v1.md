@@ -117,7 +117,7 @@ Just as with the transmission of emails, a direct message protocol such as dm3 i
 
 In web3, however, there are various ways to counteract this. Similar to web2, a blacklist of known spam addresses can be blocked. A significant advantage, however, is that the sender cannot be manipulated, since the packet sent to the delivery service must be correctly signed.
 
-Furthermore, it can be required that the nonce must be greater than a certain value, which means that transactions have already been sent with the private key associated with this address, i.e. that this address is already in use. This would mean a significantly higher effort for a potential spammer, since he cannot utilize unused addresses.
+Furthermore, it can be required that the nonce of the address ENS is referring to must be greater than a certain value, which means that transactions have already been sent with the private key associated with this address, i.e. that this address is already in use. This would mean a significantly higher effort for a potential spammer, since he cannot utilize unused addresses.
 
 ```[PIC SPAM REDUCTION]```
 
@@ -131,8 +131,13 @@ The conditions that a message is not immediately discarded as spam by the delive
 
 ### Peer-2-Peer Messaging
 
+The dm3 protocol is designed as a strict peer-2-peer messaging, with the goal that you can contact the owner of an ENS domain directly. No middleman is needed.
+
+Special attention has been paid to the simplicity of the protocol, so that it is easy to enable compatibility with different applications from other vendors. This is discussed in detail in the interoperability section.
 
 ### Group-Chat
+
+
 
 ## dm3 Storage
 
@@ -175,5 +180,11 @@ The conditions that a message is not immediately discarded as spam by the delive
 ### Web3 Messaging Multiverse
 
 ### Potential for Web2 Messengers
+
+## Privacy
+
+### Encryption
+
+### Onion Routing
 
 ## dm3 Token
