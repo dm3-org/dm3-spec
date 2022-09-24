@@ -7,7 +7,19 @@ The dm3 protocol uses **ENS** (Etherem Name Service) as general registry for nec
 
 ## Motivation
 
-...
+Messaging (such as instant massages, chats, email, etc.) has become an integral part of most people's lives. Mobile devices (such as smartphones, tablets, laptops, etc.) with instant access to the Internet make it possible to be in touch with family, friends, as well as work colleagues and customers at any time.
+
+While email is still largely decentralized and interoperable, the lack of appropriate spam protection methods other than blocking and censoring has resulted in only a few large providers interacting with each other, not to mention the fact that even today a large part of email communication is mostly unencrypted.
+Messaging services on the web2 have become closed silos, making cross-service or cross-app communication almost impossible.
+
+Although they mostly offer end-to-end encryption, some services may still have backdoors via the central service providers.
+
+In the past months, a number of different approaches and tools have been presented in the web3. Methods from the web3 such as key-based identification, encryption, and the availability of blockchain-based registries are being used. Many applications are built to follow user preferences, several protocols, mostly application specific, have been presented. Trade-offs are often necessary - such as centralized services, complex protocols. Interoperability beyond applications, services, and protocols has been limited, if possible at all. 
+
+With dm3 a protocol is presented, which is characterized by a very lean basic protocol, which can serve as a bridge between different services and can enable integration and interoperability with other services and different applications.
+
+## Base Architecture
+
 
 ## Specification
 
@@ -35,11 +47,13 @@ Example `eth.dm3.profile` text record entries:
 The profiles can only be changed by creating a new profile JSON file and changing the corresponding text record via an Ethereum transaction. It is possible to add a mutable profile extension for a user profile.
 
 The user profile MUST contain:
+
 * Public Signing Key: Key used to verify a message signature. 
 * Public Encryption Key: Key used to encrypt a message.
 * Delivery Service List: List with at least one delivery service ENS name.
 
 The user profile MAY contain:
+
 * Mutable Profile Extension URL: URL pointing to a JSON file containing additional profile information (e.g., spam filter settings). It is possible to change this information without sending an Ethereum transaction.
 
 The delivery service profile MUST contain:
