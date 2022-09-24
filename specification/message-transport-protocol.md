@@ -1,14 +1,17 @@
-# Specification: **dm3** Message Transport Protocol
+# Specification: _dm3_ Message Transport Protocol
 
 ## Abstract
 
-The specified protocol uses ENS text records in combination with a standardized API to build a federated system of message delivery services allowing to send messages from ENS name to ENS name.
+_The **dm3** (for **D**ecentralices **M**essageing for web**3**) protocol is a peer-2-peer messaging protocol with with focus on seamless **end-2-end encryption** for messgages and connection meta data, **decentralization** and no single-points-of-failure, a **lean architecture** with minimum resource requirements, **interoperability** with other services and applications, and preserving the **self-sovereignity** of the users.
+The dm3 protocol uses **ENS** (Etherem Name Service) as general registry for neccessary contact information (like public keys, addresses of delivery services, ...), stored in ENS text records, in combination with a standardized API to build an open system of message delivery services allowing to send messages from ENS name to ENS name._
 
 ## Motivation
 
+...
+
 ## Specification
 
-This specification focuses on how to deliver messages to the delivery service defined in the receiver's dm3 profile. dm3 delivery service and app implementations MAY also use the following dm3 protocol extensions:
+The specification of the **_dm3_ Message Transport Protocol** focuses on how to deliver messages to the delivery service defined in the receiver's dm3 profile. dm3 delivery service and app implementations MAY also use the following dm3 protocol extensions:
 
 * [Message Access Specification](): Specifies how received messages on a delivery service can be accessed.
 * [Message Storage Specification](storage-specification.md): Specifies how messages are persisted after they are delivered.
