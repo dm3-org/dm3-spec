@@ -1,4 +1,4 @@
-# Specification: _dm3_ Message Transport Protocol
+# Specification: _dm3_ Message Transport Protocol (DM3MTP)
 
 ## Abstract
 
@@ -14,61 +14,133 @@ Messaging services on the web2 have become closed silos, making cross-service or
 
 Although they mostly offer end-to-end encryption, some services may still have backdoors via the central service providers.
 
-In the past months, a number of different approaches and tools have been presented in the web3. Methods from the web3 such as key-based identification, encryption, and the availability of blockchain-based registries are being used. Many applications are built to follow user preferences, several protocols, mostly application specific, have been presented. Trade-offs are often necessary - such as centralized services, complex protocols. Interoperability beyond applications, services, and protocols has been limited, if possible at all. 
+In the past months, a number of different approaches and tools have been presented in the web3. Methods from the web3 such as key-based identification, encryption, and the availability of blockchain-based registries are being used. Many applications are built to follow user preferences, several protocols, mostly application specific, have been presented. Trade-offs are often necessary - such as centralized services, complex protocols. Interoperability beyond applications, services, and protocols has been limited, if possible at all.
 
 With dm3 a protocol is presented, which is characterized by a very lean basic protocol, which can serve as a bridge between different services and can enable integration and interoperability with other services and different applications.
 
 ## Base Architecture
 
+todo: aufzeichnen der Grundarchitektur
 
 ## Specification
 
-The specification of the **_dm3_ Message Transport Protocol** focuses on how to deliver messages to the delivery service defined in the receiver's dm3 profile. dm3 delivery service and app implementations MAY also use the following dm3 protocol extensions:
+The specification of the **_dm3_ Message Transport Protocol** focuses on a standardized format description for general messages and how to deliver those messages to a delivery service defined in the receiver's **dm3** profile. The **dm3** delivery service and **dm3** compatible app implementations MAY also use the following **dm3** protocol extensions:
 
-* [Message Access Specification](): Specifies how received messages on a delivery service can be accessed.
+* [Message Access Specification](access-specification.md): Specifies how received messages on a delivery service can be accessed.
 * [Message Storage Specification](storage-specification.md): Specifies how messages are persisted after they are delivered.
-* [Public Message Feed Specification](): Specifies how a public message feed is created and accessed.
-* [Intra Delivery Service Messaging Specification](): Specifies additional features for messaging if sender and receiver are using the same delivery service.
-* [Group Messaging Specification](): Specifies a protocol extension to enable group messaging.
-
+* [Public Message Feed Specification](feed-specification.md): Specifies how a public message feed is created and accessed.
+* [Intra Delivery Service Messaging Specification](intra-deliveryservice-specification.md): Specifies additional features for messaging if sender and receiver are using the same delivery service.
+* [Group Messaging Specification](group-messaging-specification.md): Specifies a protocol extension to enable group messaging.
+* [Privacy Onion Routing Specification](privacy-specification.md): Specifies a protocol extension to enable privacy preserving onion routing.
 
 ### Profile Registry
-The protocol requires a registry where the dm3 app can look up dm3 profiles of other users and delivery services. dm3 uses the following ENS text records for this purpose:
+
+A general registry is needed where a **dm3** compatible app can look up **dm3 profiles** of other users, containing
+
+* public keys,
+* links to delivery services, and
+* additional information (like spam protection settings).
+
+The **dm3** protocol uses **ENS** as general registry. The following text records are used for this purpose:
+
 * `eth.dm3.profile`: User profile entry
-* `eth.dm3.deliveryService`: Delivery service profile entry 
+* `eth.dm3.deliveryService`: Delivery service profile entry
 
-The text records MUST either contain the profile JSON string defined in Appendix 1 or a URL pointing to a profile JSON string. In the case of an URL, the integrity of the resolved profile JSON string MUST be ensured. Therefore, the URL MUST be a native IPFS URL or an URL containing exactly one `dm3Hash` parameter. 
+The text records MUST either contain
 
-Example `eth.dm3.profile` text record entries:
-* `https://delivery.dm3.network/profile/0xbcd6de065fd7e889e3...7553ab3cc?dm3Hash=0x84f89a7...278ca03e421ab50c8`
-* `ipfs://bafybeiemxf5abjwjz3e...vfyavhwq/`
+* the profile JSON string defined in Appendix 1 or
+* a URL pointing to a profile JSON string. To validate the integrity of the resolved profile JSON string, the URL MUST be a native IPFS URL or an URL containing a `dm3Hash` parameter containing the Keccak-256 hash of the JSON.
 
+> **Example** `eth.dm3.profile` text record entries:
+>
+> * `https://delivery.dm3.network/profile/0xbcd6de065fd7e889e3...7553ab3cc?dm3Hash=0x84f89a7...278ca03e421ab50c8`
+> * `ipfs://bafybeiemxf5abjwjz3e...vfyavhwq/`
 
-The profiles can only be changed by creating a new profile JSON file and changing the corresponding text record via an Ethereum transaction. It is possible to add a mutable profile extension for a user profile.
+The profiles can only be changed by creating a new profile JSON and changing the corresponding text record via an Ethereum transaction (if published on layer-1).
 
 The user profile MUST contain:
 
-* Public Signing Key: Key used to verify a message signature. 
-* Public Encryption Key: Key used to encrypt a message.
-* Delivery Service List: List with at least one delivery service ENS name.
+* **Public Signing Key:** Key used to verify a message signature.
+* **Public Encryption Key:** Key used to encrypt a message.
+* **Delivery Service List:** List with at least one delivery service ENS name.
 
-The user profile MAY contain:
+The user profile MAY contain (optional):
 
-* Mutable Profile Extension URL: URL pointing to a JSON file containing additional profile information (e.g., spam filter settings). It is possible to change this information without sending an Ethereum transaction.
+* **Mutable Profile Extension URL:** a URL pointing to a JSON file containing additional profile information (e.g., spam filter settings, special encryption requirements). It is possible to change this information without sending an Ethereum transaction.
+
+**DEFINITION: UserProfile**
+
+```JavaScript
+{
+  // Key used to encrypt messages
+  publicEncryptionKey: string,
+  // Key used to sign messages
+  publicSigningKey: string,
+  // ENS name list of the delivery services e.g., delivery.dm3.eth
+  deliveryServices: string[], 
+  // URL pointing to the profile extension JSON file
+  mutableProfileExtensionUrl: string,
+}
+```
+
+> **Example 1** UserProfile with optional field:
+>
+> ```JavaScript
+> {
+>    "publicEncryptionKey":"nyDsUmYV4EDNCsG+pK...D=",
+>    "publicSigningKey":"MBpqhsSkxevwbYEGnXX9r...c=",
+>    "deliveryService": ["deliveryservice.eth"],
+>    "mutableProfileExtensionUrl":"https://url_2_extension"
+> }
+
+> **Example 2** UserProfile with fallback delivery service:
+>
+> ```JavaScript
+> {
+>    "publicEncryptionKey":"nyDsUmYV4EDNCsG+pK...D=",
+>    "publicSigningKey":"MBpqhsSkxevwbYEGnXX9r...c=",
+>    "deliveryService": ["_deliveryservice_.eth","_fallback-deliveryservice_.eth"],
+> }
 
 The delivery service profile MUST contain:
-* Public Signing Key: Key used to verify a postmark signature. 
-* Public Encryption Key: Key used to encrypt the delivery instructions.
-* Delivery Service URL: URL pointing to the delivery service instance.
+
+* **Public Signing Key:** Key used to verify a postmark signature. 
+* **Public Encryption Key:** Key used to encrypt the delivery instructions.
+* **Delivery Service URL:** URL pointing to the delivery service instance.
 
 The following data structures defined in Appendix 2 MUST be used for the profile files.
 
+**DEFINITION: DeliveryServiceProfile**
+
+```JavaScript
+{
+  // Key used to sign postmarks
+  publicSigningKey: string,
+  // Key used to encrypt delivery information
+  publicEncryptionKey: string,
+  // URL pointing to the delivery service instance
+  url: string
+}
+```
+
+> **Example 3:** DeliveryServiceProfile
+> 
+> ```JavaScript
+> {
+>    "publicEncryptionKey":"nyDsUmYV4EDNCsG+pK...D=",
+>    "publicSigningKey":"MBpqhsSkxevwbYEGnXX9r...c=",
+>    "url": "url_of_the_deliveryservice"
+> }
 
 ### Message Transport Protocol
 
-Sending a message takes place in two steps:
-1. The sender app prepares and sends the message to the receiver's delivery service.
-2. The delivery service buffers and processes the message.
+``PIC: ### FLOW``
+
+Sending a message takes place in 3 steps:
+
+1. The sender app **prepares and sends the message to the receiver's delivery service**. If the primary delivery service (first in the list) is not available, the next one from the list is contacted (and so on).
+2. The **delivery service buffers and processes the message**(checks envelop, creates postmark to protocol time of delivery, optionally sends notification to receiver, ...).
+3. The **message is picked up by the recipient**. As soon as the recipient reports the successful processing of the message to the delivery service, the latter deletes the buffered message.
 
 Step 1 MUST consist of the following sub-steps:
 1. Query the `eth.dm3.profile` text record of the receiver's ENS name.
