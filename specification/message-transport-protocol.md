@@ -20,7 +20,11 @@ With dm3 a protocol is presented, which is characterized by a very lean basic pr
 
 ## Base Architecture
 
-todo: aufzeichnen der Grundarchitektur
+The **dm3** protocol is designed as a lean peer-2-peer messaging protocol with consistent end-to-end encryption and sufficient decentralization through an open delivery service architecture.
+
+Required contact information such as public keys for encryption and signatures as well as information on delivery services used are managed as text records in ENS (Ethereum Name Service). This provides a general registry that can be accessed across applications.
+
+Due to its simple base architecture, **dm3** is intended as a base protocol to bring together a variety of messaging applications and protocols so that true interoperability can be realized. This allows users not only to have full control over their data and messages, but also to choose the messaging app that best suits their needs and preferences, without the compromise of being limited to a particular ecosystem.
 
 ## Specification
 
@@ -284,6 +288,28 @@ The message datastructure contains the following information:
 }
 ```
 
+#### Attachments
+
+Attachments can be any type of additional data or media files. These are organized in the attachment data structure. A message can have no, or an arbitrary number of attachments.
+The overall size of the message (inclusive all attachments) must be less than 20MB. If bigger media files need to be attached, the actual data need to be stored outside the message (still encrypted with the receiver's public key and encryption) and the attachment contains only the reference (e.g., an IPFS link).
+Attachments are optional. Different **dm3** compatible application may handle attachments different (visualization, or even ignore it).
+
+The attachment data structure contains:
+
+* **Type:** the MIME type of the attachment.
+* **Data:** the base64 encoded data of the media file.
+
+##### DEFINITION Attachment Data Structure
+
+```JavaScript
+{
+  // MIME types
+  type: string,
+  // the data, base64 encoded
+  data: string
+}
+```
+
 #### Encryption Envelop Data Structure
 
 The encryption envelop is the data structure which is sent to the delivery service. It contains delivery metadata and the encrypted message itself. The envelop (metadata needed for delivery) is read and interpreted by the delivery service. However, the actual message is encrypted with the receivers key and signed with the senders key so that it cannot read or altered by the delivery service.
@@ -312,6 +338,16 @@ EncryptionEnvelop
 }
 ```
 
+#### Delivery Information
+
+The delivery information contains all meta data needed by the delivery service to handle a message.
+
+The data structure contains the following information:
+
+* **To:** The ENS name the message is sent to. In case of a public message, this is not needed.
+* **From:** the ENS name of the sender
+* **Delivery Instruction:** this is an optional information. It is needed for compatibility reasons with other protocols/apps. The stored information (e.g., a conversation or topic id, ...) will be delivered with any reply of the receiver. It is neighter evaluated nor altered from **dm3**.
+
 ##### DEFINITION Delivery Information
 
 ```JavaScript
@@ -327,6 +363,16 @@ EncryptionEnvelop
 }
 ```
 
+#### Postmark Data Structure
+
+The postmark data structure contains information added by the delivery service regarding the delivery status.
+
+It contains the following information:
+
+* **Massage Hash:** the Hash (keccak256) of the entire message.
+* **Incomming Timestamp:** The unix time when the delivery service received the message.
+* **Signature:** the signature of the postmark from the delivery service. This is needed to validate the postmark information.
+
 ##### DEFINITION Postmark
 
 ```JavaScript
@@ -341,14 +387,14 @@ EncryptionEnvelop
 }
 ```
 
-#### API
+#### API (Incoming Messages)
 
 To accept incoming messages, the delivery service MUST support the JSON-RPC method `dm3_submitMessage` with the following structure:
 
 **Request**
 
 ```TypeScript
-// see appendix 3 for EncryptioEnvelop data structure
+// see description of EncryptioEnvelop data structure
 EncryptionEnvelop
 ```
 
@@ -358,26 +404,14 @@ EncryptionEnvelop
 success: boolean
 ```
 
-## Appendix 2: Messaging Data Structures
+The response is true, if the delivery service received the envelop with the message. It is still ``true``, if the message does not fit the spam parameters (like minNonce or minBalance) and is recarded.
+The response is ``false``, if the envelope can't be opended and interpreted by the delivery service.
 
-
-
-Attachment
-
-```JavaScript
-{
-  // MIME types
-  type: string,
-
-  data: string
-}
- ```
-
-## Appendix 3: Example Sequences
+## Appendix: Example Sequences
 
 ### Message Delivery
 
-  ```mermaid
+```mermaid
   sequenceDiagram
     actor A as Alice
     participant AA as Alice's App
@@ -401,7 +435,7 @@ Attachment
 
 **Prepare Message**
 
-   ```mermaid
+```mermaid
   sequenceDiagram
    
     participant AA as Alice's App
