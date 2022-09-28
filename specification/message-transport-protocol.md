@@ -3,28 +3,46 @@
 ## Abstract
 
 _The **dm3** (for **D**ecentraliced **M**essageing for web**3**) protocol is a peer-2-peer messaging protocol with focus on seamless **end-2-end encryption** for messgages and connection meta data, **decentralization** and no single-points-of-failure, a **lean architecture** with minimum resource requirements, **interoperability** with other services, applications, and protocols, and preserving the **self-sovereignity** of the users.
-The **dm3** protocol uses **ENS** (Etherem Name Service) as general registry for neccessary contact information (like public keys, addresses of delivery services, ...), stored in ENS text records, in combination with a standardized API to build an open system of message delivery services allowing to send messages from ENS name to ENS name._
+The **dm3** protocol uses **ENS** (Etherem Name Service) as general registry for neccessary contact information (like public keys, addresses of delivery services, ...), stored in ENS text records, in combination with a standardized API to build an open ecosystem of message delivery services allowing to send messages from ENS name to ENS name._
 
 ## Motivation
 
 Messaging (such as instant massages, chats, email, etc.) has become an integral part of most people's lives. Mobile devices (such as smartphones, tablets, laptops, etc.) with instant access to the Internet make it possible to be in touch with family, friends, as well as work colleagues and customers at any time.
 
 While email services are still largely decentralized and interoperable, the lack of appropriate spam protection methods other than blocking and censoring has resulted in only a few large providers interacting with each other, not to mention the fact that even today a large portion of email communication is mostly unencrypted.
-Messaging services on the web2 have become closed silos, making cross-service or cross-app communication almost impossible. Although they mostly offer end-to-end encryption, some services may still have backdoors via the central service providers or are able to stop end-2-end encryption without the user's approval.
 
-In the past months, a number of different approaches and tools have been presented in the web3. Methods from the web3 such as key-based identification, encryption, and the availability of blockchain-based registries are being used. Many applications are built to meet user preferences, several protocols have been presented. Trade-offs are often necessary - such as centralized services, application related registries, or complex protocols. Interoperability across applications, services, and protocols is still limited, if possible at all.
+Messaging services on the web2 (like WhatsApp, Signal, Telegram, ...) have become closed silos, making cross-service or cross-app communication almost impossible. Although they mostly offer end-to-end encryption, some services may still have backdoors via the central service providers or can stop end-2-end encryption without the user's approval.
+
+In the past months, several different approaches and tools have been presented in web3. Methods from the web3 such as key-based identification, encryption, and the availability of blockchain-based registries are being used. Many applications are built to meet user preferences, several protocols have been presented. Trade-offs are often necessary - such as centralized services, application related registries, or complex protocols. Interoperability across applications, services, and protocols is still limited, if possible at all.
 
 With **dm3**, a protocol is presented, which is characterized by a very lean base protocol (DM3MTP - the **dm3** message transfer protocol), which can serve as a bridge between different services and can enable integration and interoperability with other services and different applications. The aim of **dm3** is to suggest a common base standard for web3 messaging, on which further protocols and applications can be built to create a silo-free, secure, self-determined, decentralized messaging ecosystem - based on web3 technology.
 
+**This allows users not only to have full control over their data and messages, but also to choose the messaging app that best suits their needs and preferences, without the compromise of being limited to a particular ecosystem.**
+
+## Roadmap and current State
+
+Version:  1.0
+Author: Heiko Burkhardt, Steffen Kux
+
+This version of the protocol specification is intended as base for further discussions and alignment with other services, protocols, and applications.
+
+### Roadmap
+
+* **09/2022** - Specification version 1.0 published, reference implementation
+* **10/2022** - Discussion with other protocols/apps and revision
+* **11/2022** - Finalization and proposal (ENS-IP), update reference implementation
+
+* **12/2022** - Interoperability, integration in other apps, protocols
+  
 ## Base Architecture
 
 The **dm3** protocol is designed as a lean peer-2-peer messaging protocol with consistent end-to-end encryption and sufficient decentralization through an open delivery service architecture.
 
 ``[PIC BASE ARCHITECTURE]``
 
-Required contact information such as public keys for encryption and signatures as well as information on used delivery services are managed as text records in ENS (Ethereum Name Service) - the **dm3 profile**. This provides a general registry that can be accessed across applications and protocols. This means that services using this standard do not have to rely on the technology and availability of one provider, nor does it result in the emergence of various incompatible silos in web3 as in web2.
+Required contact information such as public keys for encryption and signatures as well as information on used delivery services are managed as text records in ENS (Ethereum Name Service) - the **dm3 profile**. This provides a general registry that can be accessed across applications and protocols. Thus, services using this standard do not have to rely on the technology and availability of one provider, nor does it result in the emergence of various incompatible silos in web3 as in web2.
 
-Due to its simple base architecture, **dm3** is intended as a base protocol to bring together a variety of messaging applications and protocols so that true interoperability can be realized. This allows users not only to have full control over their data and messages, but also to choose the messaging app that best suits their needs and preferences, without the compromise of being limited to a particular ecosystem.
+Due to its simple base architecture, **dm3** is intended as a base protocol to bring together a variety of messaging applications and protocols so that true interoperability can be realized.
 
 ``[PIC MULTI architecture]``
 
@@ -40,15 +58,13 @@ The specification of the **_dm3_ Message Transport Protocol** focuses on a stand
 * [Privacy Onion Routing Specification](privacy-specification.md): Specifies a protocol extension to enable privacy preserving onion routing.
 * [Spam Protection Specification](spam-protection-specification.md): Specifies additional methods, based on web3 technology, the prevent spam on the receiver's side.
 
-This document only describes the base protocol - the **_dm3_ Message Transport Protocol**.
-
 ### Profile Registry
 
 A general registry is needed where a **dm3** compatible app, service, or protocol can look up **dm3 profiles** of other users, containing
 
-* public keys,
-* links to delivery services, and
-* additional information (like spam reduction settings, other user preferences).
+* Public keys,
+* Links to delivery services, and
+* Additional information (like spam reduction settings, other user preferences).
 
 The **dm3** protocol uses **ENS** as general registry. The following text records are used for this purpose:
 
@@ -57,8 +73,8 @@ The **dm3** protocol uses **ENS** as general registry. The following text record
 
 The text records MUST either contain
 
-* the profile JSON string defined below, or
-* a URL pointing to a profile JSON object. To validate the integrity of the resolved profile JSON string, the URL MUST be a native IPFS URL or an URL containing a `dm3Hash` parameter containing the Keccak-256 hash of the JSON.
+* The profile JSON string defined below, or
+* A URL pointing to a profile JSON object. To validate the integrity of the resolved profile JSON string, the URL MUST be a native IPFS URL or an URL containing a `dm3Hash` parameter containing the Keccak-256 hash of the JSON.
 
 > **Example** `eth.dm3.profile` text record entries:
 >
@@ -118,9 +134,9 @@ The user profile MAY contain (optional) a
 The mutableProfileExtension (optional) conatains, if available, additional configuration information of the receiver:
 
 * **Minimum Nonce:** the sender's address (address linked to the ENS domain) must have a nonce higher than this value, showing that this is a used account.
-* **Minimum Balance:** the sender's address holds more than a defined minimum in Ether or another token. This at least makes it more difficult/expensive for potential spammers to generate many new addresses from which to send messages, since these addresses then have to hold assets in order to be accepted as senders.
+* **Minimum Balance:** the sender's address holds more than a defined minimum in Ether or another token. This at least makes it more difficult/expensive for potential spammers to generate many new addresses from which to send messages, since these addresses then must hold assets in order to be accepted as senders.
 * **Minimum Balance Token Address:** If the balance is not defined in Ether, the address of the token contract needs to be declared. If Ether is used, this fields stays empty.
-* **Encryption Algorithm:** the default encryption algorithm is **x25519-chacha20-poly1305**. If another encryption algorithm needs to be used (e.g., because this is needed for an ecosystem which is integrated into **dm3**), this can be requested. The default algorithm should be accepted, too. Otherwise it might be impossible for a sender to deliver a message when it doesn't support the requested algorithm.
+* **Encryption Algorithm:** the default encryption algorithm is **x25519-chacha20-poly1305**. If another encryption algorithm needs to be used (e.g., because this is needed for an ecosystem which is integrated into **dm3**), this can be requested. The default algorithm should be accepted, too. Otherwise, it might be impossible for a sender to deliver a message when it doesn't support the requested algorithm.
 This is a list of supported algorithms, sorted by importance. All listed algorithms must be supported by the receiver. The sender is free to choose.
 
 ##### DEFINITION: mutableProfileExtension
@@ -259,7 +275,7 @@ The message datastructure contains the following information:
 * **Reference Message Hash:** Some message types (THREAD_POST, DELETE_REQUEST, EDIT, REACTION) need a referenced message.
 * **Attachments:** Media or other files may be an attachment to a message. Attachments are described in detail below.
 * **Reply Delivery Instruction:** this is an optional information. It is needed for compatibility reasons with other protocols/apps. The stored information will be delivered with any reply (e.g., a conversation or topic id, ...). It is neighter evaluated nor altered from **dm3**.
-* **Signature:** Signature of the sender of the message datastructure.
+* **Signature:** Signature of the sender of the message datastructure without the signature field.
 
 ##### DEFINITION Message Data Structure
 
@@ -320,7 +336,7 @@ The encryption envelop is the data structure which is sent to the delivery servi
 The encryption envelop contains the following data:
 
 * **Version:** the protocol version of **dm3**. This is 'v1'.
-* **Message:** the encrypted message (Message Data Structure), if it is a private peer-2-peer message. It is unencrypted text if it is a public message (without receiver).
+* **Message:** the encrypted message (Message Data Structure) if it is a private peer-2-peer message. It is unencrypted text if it is a public message (without receiver).
 * **Delivery Information:** a data struct with the delivery information needed by the delivery service (message meta data).
 * **Postmark:** a data struct with the information of the delivery status. It is added by the delivery service and is encrypted with the public key of the receiver.
 
@@ -393,14 +409,14 @@ It contains the following information:
 
 To accept incoming messages, the delivery service MUST support the JSON-RPC method `dm3_submitMessage` with the following structure:
 
-**Request**
+##### Request
 
 ```TypeScript
 // see description of EncryptionEnvelop data structure
 EncryptionEnvelop
 ```
 
-**Response**
+##### Response
 
 ```TypeScript
 success: boolean
@@ -435,7 +451,7 @@ The response is ``false``, if the envelope can't be opended and interpreted by t
 
 ```
 
-**Prepare Message**
+### Prepare Message
 
 ```mermaid
   sequenceDiagram
