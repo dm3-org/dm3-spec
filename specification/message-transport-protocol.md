@@ -22,7 +22,7 @@ With **dm3**, a protocol is presented, which is characterized by a very lean bas
 ## Roadmap and current State
 
 Version:  1.0
-Author: Heiko Burkhardt, Steffen Kux
+Authors: Heiko Burkhardt, Steffen Kux (corpus.ventures)
 
 This version of the protocol specification is intended as base for further discussions and alignment with other services, protocols, and applications.
 
@@ -31,20 +31,17 @@ This version of the protocol specification is intended as base for further discu
 * **09/2022** - Specification version 1.0 published, reference implementation
 * **10/2022** - Discussion with other protocols/apps and revision
 * **11/2022** - Finalization and proposal (ENS-IP), update reference implementation
-
 * **12/2022** - Interoperability, integration in other apps, protocols
   
 ## Base Architecture
 
 The **dm3** protocol is designed as a lean peer-2-peer messaging protocol with consistent end-to-end encryption and sufficient decentralization through an open delivery service architecture.
 
-``[PIC BASE ARCHITECTURE]``
-
-Required contact information such as public keys for encryption and signatures as well as information on used delivery services are managed as text records in ENS (Ethereum Name Service) - the **dm3 profile**. This provides a general registry that can be accessed across applications and protocols. Thus, services using this standard do not have to rely on the technology and availability of one provider, nor does it result in the emergence of various incompatible silos in web3 as in web2.
-
 Due to its simple base architecture, **dm3** is intended as a base protocol to bring together a variety of messaging applications and protocols so that true interoperability can be realized.
 
-``[PIC MULTI architecture]``
+![image](architecture.png)
+
+Required contact information such as public keys for encryption and signatures as well as information on used delivery services are managed as text records in ENS (Ethereum Name Service) - the **dm3 profile**. This provides a general registry that can be accessed across applications and protocols. Thus, services using this standard do not have to rely on the technology and availability of one provider, nor does it result in the emergence of various incompatible silos in web3 as in web2.
 
 ## Specification
 
@@ -211,7 +208,7 @@ Sending (and receiving) a message takes place in 3 steps, although only the firs
 3. _The **message is picked up by the recipient**. As soon as the recipient reports the successful processing of the message to the delivery service, the latter deletes the buffered message.
 **!!!** This is not part of the "Message Transfer Protocol", as this depends on the implementation and objective of the delivery service. If the delivery service is following the **dm3 Access Specification** to serve **dm3** compatible clients, it offers a REST API to retrieve the messages, but a delivery service may also act as interface to another protocol or application ecosystem, handling incoming messages according to its rules. **!!!**_
 
-``[PIC: ### FLOW]``
+![image](principle.png)
 
 #### Step 1: Preparation of the Message and Envelope
 
@@ -427,36 +424,12 @@ The response is ``false``, if the envelope can't be opended and interpreted by t
 
 ## Appendix: Example Sequences
 
-### Message Delivery
-
-```mermaid
-  sequenceDiagram
-    actor A as Alice
-    participant AA as Alice's App
-
-    
-    participant BD as Bobs's Delivery Service
-
-
-    A->>AA: writes message
-  
-    AA->>AA: prepare message
-
-    AA->>BD: dm3_submitMessage
-    BD->>BD: decrypt deliveryInformation
-    BD->>BD: apply filter rules
-    BD->>BD: add postmark
-    BD->>BD: buffer message
-   
-
-```
-
 ### Prepare Message
 
 ```mermaid
   sequenceDiagram
-   
-    participant AA as Alice's App
+
+    participant AA as Alice' Client
     participant E as ENS
     participant P as Profile Storage (e.g. IPFS)
   
@@ -479,5 +452,29 @@ The response is ``false``, if the envelope can't be opended and interpreted by t
     AA->>AA: sign message
     AA->>AA: encrypt message
     AA->>AA: encrypt deliveryInformation
-    
+```
+
+### Message Delivery
+
+```mermaid
+  sequenceDiagram
+    actor A as Alice
+    participant AA as Alice' Client
+    participant BD as Bobs's Delivery Service
+    participant BB as Bob's Client
+   
+    A->>AA: writes message
+
+    AA->>AA: prepare message
+
+    AA->>BD: dm3_submitMessage
+    BD->>BD: decrypt deliveryInformation
+    BD->>BD: apply filter rules
+    BD->>BD: add postmark
+    BD->>BD: buffer message
+
+    opt
+       BD->>BB: notification
+    end
+  
 ```
