@@ -285,7 +285,6 @@ The message datastructure contains the following information:
 ```JavaScript
 {
    // receiver ens-name
-   // optional (not needed for public messages)
    to: string,
    // sender ens-name
    from: string,
@@ -373,7 +372,6 @@ The data structure contains the following information:
 ```JavaScript
 {
   // receiver ens-name
-  // optional (not needed for public messages)
   to: string,
   // sender ens-name
   from: string,
