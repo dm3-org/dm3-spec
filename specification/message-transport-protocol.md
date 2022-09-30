@@ -90,7 +90,7 @@ The specification thereof will be published in protocol extension **Layer-2 Regi
 
 The user profile MUST contain:
 
-* **Public Signing Key:** Key used to verify a message signature (ECDSA). The public signing key is the public key of an Ethereum private/public key pair (secp256k1). How to generate or derive this key pair depends on the implementation of the client. The **Encryption and Signing Key Derivation Specification** proposes a method to derive those keys based of a signature of the wallet keys.
+* **Public Signing Key:** Key used to verify a message signature (ECDSA). The public signing key is the public key of an secp256k1 private/public key pair. How to generate or derive this key pair depends on the implementation of the client. The **Encryption and Signing Key Derivation Specification** proposes a method to derive those keys based of a signature of the wallet keys.
 * **Public Encryption Key:** Key used to encrypt a message. As default, the algorithm **x25519-chacha20-poly1305** is used. If needed (e.g., for compatibility reasons with an integrated protocol), a different encryption can be specified in the Mutable Profile Extension (see below). Nevertheless, to use the default encryption is highly recommended.
 * **Delivery Service List:** List with at least one delivery service' ENS name.
 
@@ -140,7 +140,7 @@ The mutableProfileExtension (optional) conatains, if available, additional confi
 * **Minimum Balance:** the sender's address holds more than a defined minimum in Ether or another token, as specified in Minimum Token Address.
 * **Minimum Balance Token Address:** If the balance is not defined in Ether, the address of the token contract needs to be declared. If Ether is used, this fields stays empty.
 * **Encryption Algorithm:** the default encryption algorithm is **x25519-chacha20-poly1305**. If another encryption algorithm needs to be used (e.g., because this is needed for an ecosystem which is integrated into **dm3**), this can be requested. The default algorithm must be accepted, too. Otherwise, it might be impossible for a sender to deliver a message when it doesn't support the requested algorithm.
-This is a list of supported algorithms, sorted by importance. All listed algorithms must be supported by the receiver. The sender is free to choose.
+This is a list of supported algorithms, sorted by importance. All listed algorithms must be supported by the receiver. The sender is free to choose but should use reveivers preferrences if supported.
 
 ##### DEFINITION: mutableProfileExtension
 
@@ -201,7 +201,7 @@ As encryption algorithm for the delivery service, the default algorithm **x25519
 > {
 >    "publicEncryptionKey":"nyDsUmYV4EDNCsG+pK...D=",
 >    "publicSigningKey":"MBpqhsSkxevwbYEGnXX9r...c=",
->    "url": "https://<url_of_the_deliveryservice>"
+>    "url": "https://example_deliveryservice"
 > }
 > ```
 
@@ -238,8 +238,7 @@ If the profile record is not set, the message cannot be delivered. It has to sta
 _if available:_
     * read optional encryption parameters (see also Encryption)
 2. Sign the message using the private sender signing key, using ECDSA.
-3. Encrypt the message using the public encryption key of the receiver (part of the user profile). Default encryption algorithm is **x25519-chacha20-poly1305**. If a different algorithm is required (defined in the _mutableProfileExtension_), this must be used for encryption.
-_**ATTENTION:** A deviation from the default may result in the message not being sent to the receiver because the sender cannot handle the required encryption._
+3. Encrypt the message using the public encryption key of the receiver (part of the user profile). Default encryption algorithm is **x25519-chacha20-poly1305**. If a different algorithm is required (defined in the _mutableProfileExtension_), this should be used for encryption. If it is not supported by the sender, the default encryption is used.
 4. Encrypt the delivery information using the public encryption key of the delivery service (part of the delivery service profile). The mandatory encryption algorithm is **x25519-chacha20-poly1305**.
 
 ##### Submit Message
@@ -255,7 +254,7 @@ _if available:_
 1. Decrypt delivery information.
 2. Apply filter rules from the receiver's mutable profile extension. Discard the message if conditions are not met.
 3. Create a postmark. The postmark protocols the reception and buffering of the message.
-4. Buffer message. The delivery service is responsible to store the encrypted message until the receiver picks it up. A delivery service may decide to have a max holding time.It must be at least 1 month. If the receiver didn't fetch the message within this time, the message may be deleted.
+4. Buffer message. The delivery service is responsible to store the encrypted message until the receiver picks it up. A delivery service may decide to have a max holding time. It must be at least 1 month. If the receiver didn't fetch the message within this time, the message may be deleted.
 5. Optional: send notification(s) to the receiver that a message is waiting for delivery.
 
 #### Message Data Structure
