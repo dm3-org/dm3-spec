@@ -2,7 +2,7 @@
 
 ## Abstract
 
-_The **dm3** (**D**ecentralized **M**essageing for web**3** or **D**irect **M**essage **3**) protocol is an end-2-end **encrypted** peer-2-peer messaging protocol, rooted in **ENS** (Ethereum Name Service). It is **decentralized**, has no single-points-of-failure, a **lean architecture** with minimum resource requirements, and enables **interoperability** with other messaging solutions, while preserving the **self-sovereignity** of its users.
+_The **dm3** (**D**ecentralized **M**essaging for web**3** or **D**irect **M**essage **3**) protocol is an end-2-end **encrypted** peer-2-peer messaging protocol, rooted in **ENS** (Ethereum Name Service). It is **decentralized**, has no single-points-of-failure, a **lean architecture** with minimum resource requirements, and enables **interoperability** with other messaging solutions, while preserving the **self-sovereignity** of its users.
 The **dm3** protocol uses **ENS** as general registry for neccessary contact information (like public keys, addresses of delivery services, ...), stored in ENS text records, in combination with a standardized API to build an open ecosystem of message delivery services allowing to send messages from ENS name to ENS name._
 
 ## Motivation
