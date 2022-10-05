@@ -4,9 +4,9 @@
 
 project = 'dm3'
 copyright = '2022, corpus.ventures GmbH'
-author = 'Steffen Kux'
+author = 'Steffen Kux, Heiko Burkhardt, Christoph Jentzsch'
 
-release = '1.0'
+release = '0.2'
 version = '0.1.0'
 
 # -- General configuration
