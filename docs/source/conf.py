@@ -18,6 +18,7 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
     'myst_parser',
+    'shinxcontrib.mermaid',
 ]
 
 intersphinx_mapping = {
@@ -25,6 +26,10 @@ intersphinx_mapping = {
     'sphinx': ('https://www.sphinx-doc.org/en/master/', None),
 }
 intersphinx_disabled_domains = ['std']
+
+myst_enable_extensions = [
+  "colon_fence",
+]
 
 templates_path = ['_templates']
 
