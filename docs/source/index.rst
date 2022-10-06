@@ -10,3 +10,4 @@ Contents
 .. toctree::
 
    specification/message-transport-protocol
+   api
