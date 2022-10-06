@@ -1,0 +1,8 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
+
+[project]
+name = "dm3"
+authors = [{name = "Steffen Kux", email = "steffen@corpus.ventures"},{name = "Heiko Burkhardt", email = "heiko@corpus.ventures"},{name = "Christoph Jentzsch", email = "christoph@corpus.ventures"}]
+dynamic = ["version", "description"]
