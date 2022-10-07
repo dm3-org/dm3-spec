@@ -1,42 +1,28 @@
-Welcome to Incubed's documentation!
-===================================
+.. Sphinx with Markdown documentation master file, created by
+   sphinx-quickstart on Thu Oct  6 19:07:54 2016.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
 
+Welcome to Sphinx with Markdown's documentation!
+================================================
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Reference
+This is a Sphinx documentation project that shows how you could use Markdown in Sphinx.
 
-   getting_started
-   download
-   incubed_from_vps
-   spec
-   milestones
-   benchmarkSummary
-   embedded
-   config
-   rpc
-   api-c
-   api-wasm
-   api-python
-   api-java
-   api-dotnet
-   api-rust
-   api-swift
-   api-cmd
-   api-node-server
-   api-solidity
-   
+Contents:
 
 .. toctree::
    :maxdepth: 2
-   :caption: Concept
-   :numbered:
 
-   intro
-   ethereum
-   bitcoin
-   incentivization
-   decentralizing_services
-   Threat-Model-for-Incubed
- 
+   question.md
+   answer.md
+   answer_beni.md
+
+
+
+Indices and tables
+==================
+
 * :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
