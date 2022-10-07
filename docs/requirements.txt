@@ -1,2 +1,2 @@
 myst_parser==0.18.1
-md-mermaid==9.1.7
+md-mermaid==0.1.1
