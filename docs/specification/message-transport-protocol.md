@@ -430,11 +430,9 @@ The response is ``false``, if the envelope can't be opended and interpreted by t
 
 ```mermaid
   sequenceDiagram
-
     participant AA as Alice' Client
     participant E as ENS
     participant P as Profile Storage (e.g. IPFS)
-  
     AA->>E: get eth.dm3.profile for Bob's ENS name
     E-->>AA: eth.dm3.profile text record
     opt eth.dm3.profile text record is an URL
@@ -442,7 +440,6 @@ The response is ``false``, if the envelope can't be opended and interpreted by t
       P-->>AA: profileRegistryEntry
       AA->>AA: check profileRegistryEntry integrity
     end
-    
     AA->>E: get eth.dm3.deliveryService of Bob's delivery service
     E-->>AA: eth.dm3.deliveryService text record
     opt eth.dm3.profile text record is an URL
@@ -450,7 +447,6 @@ The response is ``false``, if the envelope can't be opended and interpreted by t
       P-->>AA: deliveryServiceRegistryEntry
       AA->>AA: check deliveryServiceRegistryEntry integrity
     end
-
     AA->>AA: sign message
     AA->>AA: encrypt message
     AA->>AA: encrypt deliveryInformation
@@ -463,20 +459,15 @@ The response is ``false``, if the envelope can't be opended and interpreted by t
     actor A as Alice
     participant AA as Alice' Client
     participant BD as Bobs's Delivery Service
-    participant BB as Bob's Client
-   
+    participant BB as Bob's Client   
     A->>AA: writes message
-
     AA->>AA: prepare message
-
     AA->>BD: dm3_submitMessage
     BD->>BD: decrypt deliveryInformation
     BD->>BD: apply filter rules
     BD->>BD: add postmark
     BD->>BD: buffer message
-
     opt
        BD->>BB: notification
-    end
-  
+    end  
 ```
