@@ -20,8 +20,8 @@
 # ones.
 extensions = [
     'sphinx.ext.githubpages',
+    'sphinxcontrib.mermaid',
     'myst_parser',
-    'md_mermaid',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -42,7 +42,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'dm3'
-copyright = u'2022, corpus.centures'
+copyright = u'2022, corpus.ventures GmbH'
 author = u'Steffen Kux, Heiko Burkhardt, Christoph Jentzsch'
 
 # The version info for the project you're documenting, acts as replacement for

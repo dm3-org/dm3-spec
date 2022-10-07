@@ -1,2 +1,2 @@
 myst_parser==0.18.1
-md-mermaid==0.1.1
+sphinxcontrib-mermaid==8.4.8
