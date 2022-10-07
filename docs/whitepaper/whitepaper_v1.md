@@ -187,4 +187,6 @@ Special attention has been paid to the simplicity of the protocol, so that it is
 
 ### Onion Routing
 
+## Search
+
 ## dm3 Token
