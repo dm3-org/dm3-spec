@@ -225,7 +225,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'dm3.tex', u'dm3 documentation',
-     u'Steffen Kux, 'manual'),
+     u'Steffen Kux', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
