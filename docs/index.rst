@@ -4,11 +4,12 @@ dm3 specifications
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: specifications
    :numbered:
 
    specification/message-transport-protocol.md
+
 
 
 Indices and tables

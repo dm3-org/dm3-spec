@@ -428,7 +428,7 @@ The response is ``false``, if the envelope can't be opended and interpreted by t
 
 ### Prepare Message
 
-```mermaid
+```{mermaid}
   sequenceDiagram
     participant AA as Alice' Client
     participant E as ENS
@@ -454,7 +454,7 @@ The response is ``false``, if the envelope can't be opended and interpreted by t
 
 ### Message Delivery
 
-```mermaid
+```{mermaid}
   sequenceDiagram
     actor A as Alice
     participant AA as Alice' Client
