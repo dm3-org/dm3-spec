@@ -41,7 +41,7 @@ source_suffix = ['.rst', '.md']
 master_doc = 'index'
 
 # General information about the project.
-project = u'dm3'
+project = u'dm3 - web3 messaging'
 copyright = u'2022, corpus.ventures GmbH'
 author = u'Steffen Kux, Heiko Burkhardt, Christoph Jentzsch'
 

@@ -8,8 +8,8 @@ Contents:
    :caption: specifications
    :numbered:
 
-   specification/message-transport-protocol.md
-
+   specification/overview
+   specification/message-transport/mtp
 
 
 Indices and tables
