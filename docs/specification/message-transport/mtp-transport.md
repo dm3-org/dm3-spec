@@ -13,7 +13,7 @@ Sending (and receiving) a message takes place in 3 steps, although only the firs
 
 ### Step 1: Preparation of the Message and Envelope
 
-#### Get dm3 profile
+**Get dm3 profile**
 
 1. Read the `eth.dm3.profile` text record of the receiver's ENS name.
 If the profile record is not set, the message cannot be delivered. It has to stay with the sender until the potential receiver publishes his/her profile.
@@ -27,7 +27,7 @@ If the profile record is not set, the message cannot be delivered. It has to sta
    3. Interprete JSON object as **dm3 delivery service profile**.
 5. If the selected delivery service is unavailable, the sender MUST use the delivery service with the next higher index in the `deliveryServices` list as fallback.
 
-#### Create Message and Envelope
+**Create Message and Envelope**
 
 1. Get mutableProfileExtensionUrl from **dm3 profile**
 _if available:_
@@ -60,7 +60,7 @@ _if available:_
     AA->>AA: encrypt deliveryInformation
 ```
 
-#### Submit Message
+**Submit Message**
 
 1. Get mutableProfileExtensionUrl from **dm3 profile**
 _if available:_
