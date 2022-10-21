@@ -18,6 +18,7 @@
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+import sphinx_pdj_theme
 extensions = [
     'sphinx.ext.githubpages',
     'sphinxcontrib.mermaid',
@@ -86,7 +87,10 @@ todo_include_todos = False
 # a list of builtin themes.
 #
 #html_theme = 'sphinx_rtd_theme'
-html_theme = 'renku'
+#html_theme = 'renku'
+
+html_theme = 'sphinx_pdj_theme'
+html_theme_path = [sphinx_pdj_theme.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

@@ -5,7 +5,7 @@ Contents:
 
 .. toctree::
    :maxdepth: 3
-   :caption: specifications
+   :caption: Specifications
    :numbered:
 
    specification/overview

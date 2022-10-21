@@ -1,8 +1,8 @@
-DM3MTP Message Transport Protocol
-=================================
+Message Transport Protocol (DM3MTP)
+===================================
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
    
    mtp-registry
    mtp-transport
