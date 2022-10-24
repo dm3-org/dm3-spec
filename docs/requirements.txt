@@ -6,4 +6,4 @@ readthedocs-sphinx-search==0.1.1
 pygments==2.11.2
 renku-sphinx-theme==0.2.2
 sphinx-pdj-theme==0.2.1
-cloud-sptheme==1.10.1
+cloud-sptheme>=1.10
