@@ -7,4 +7,4 @@ Message Transport Protocol (DM3MTP)
    mtp-registry
    mtp-transport
    mtp-deliveryservice-api
-
+   mtp-appendix

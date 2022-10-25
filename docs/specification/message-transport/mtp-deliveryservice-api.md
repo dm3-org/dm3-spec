@@ -1,5 +1,7 @@
 # API Delivery-Service (Incoming Messages)
 
+For more detailed information about delivery services, see [appendix](mtp-appendix.md#appendix).
+
 To accept incoming messages, the delivery service MUST support the JSON-RPC method `dm3_submitMessage` with the following structure:
 
 ## Request
