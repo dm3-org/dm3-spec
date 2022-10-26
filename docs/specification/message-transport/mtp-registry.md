@@ -72,7 +72,7 @@ The user profile MAY contain (optional) a
 > }
 > ```
 
-The mutableProfileExtension (optional) conatains, if available, additional configuration information of the receiver:
+The mutableProfileExtension (optional) contains, if available, additional configuration information of the receiver:
 
 * **Minimum Nonce:** the sender's address (address linked to the ENS domain) must have a nonce higher than this value, showing that this is a used account.
 * **Minimum Balance:** the sender's address holds more than a defined minimum in Ether or another token, as specified in Minimum Token Address.

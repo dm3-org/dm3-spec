@@ -25,7 +25,7 @@ The **dm3** protocol is designed as a lean peer-2-peer messaging protocol with c
 
 Due to its simple base architecture, **dm3** is intended as a base protocol to bring together a variety of messaging applications and protocols so that true interoperability can be realized.
 
-![image](architecture.png)
+![image](architecture.svg)
 
 Required contact information such as public encryption keys and public keys to verify signatures as well as information on used delivery services are managed as text records in ENS (Ethereum Name Service) - the **dm3 profile**. This provides a general registry that can be accessed across applications and protocols. Thus, services using this standard do not have to rely on the technology and availability of one provider, nor does it result in the emergence of various incompatible silos in web3 as in web2.
 
@@ -45,6 +45,6 @@ The **dm3** delivery service and **dm3** compatible app implementations MAY also
 * **Spam Protection Specification**: Specifies additional methods, based on web3 technology, the prevent spam on the receiver's side.
 * **Layer-2 Registry Specification**: Specifies how to include a layer-2 or cross-chain registry into subdomains to extend the general registry
 
-![image](packages.png)
+![image](packages.svg)
 
 _The specifications for the protocol extensions are still in draft status and will be published soon._

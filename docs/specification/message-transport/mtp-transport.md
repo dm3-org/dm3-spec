@@ -7,7 +7,7 @@ Sending (and receiving) a message takes place in 3 steps, although only the firs
 3. _The **message is picked up by the recipient**. As soon as the recipient reports the successful processing of the message to the delivery service, the latter deletes the buffered message.
 **!!!** This is not part of the "Message Transfer Protocol", as this depends on the implementation and objective of the delivery service. If the delivery service is following the **dm3 Access Specification** to serve **dm3** compatible clients, it offers a REST API to retrieve the messages, but a delivery service may also act as interface to another protocol or application ecosystem, handling incoming messages according to its rules. **!!!**_
 
-![image](principle.png)
+![image](principle.svg)
 
 ## Workflow
 
