@@ -14,11 +14,11 @@ The **dm3** protocol uses **ENS** as general registry. The following text record
 The text records MUST either contain
 
 * The profile JSON string defined below, or
-* A URL pointing to a profile JSON object. To validate the integrity of the resolved profile JSON string, the URL MUST be a native IPFS URL or a URL containing a `dm3Hash` parameter containing the Keccak-256 hash of the JSON.
+* A URL pointing to a profile JSON object. To validate the integrity of the resolved profile JSON string, the URL MUST be a native IPFS URL or a URL containing a `dm3Hash` parameter containing the **SHA-256** hash of the JSON.
 
 > **Example** `eth.dm3.profile` text record entries:
 >
-> * `https://delivery.dm3.network/profile/0xbcd6de065fd7...b3cc?dm3Hash=0x84f8...b50c8`
+> * `https://delivery.dm3.network/profile/0xbcd6de065fd7...b3cc?dm3Hash=ab84f8...b50c8`
 > * `ipfs://bafybeiemxf5abjwjz3e...vfyavhwq/`
 
 The profiles can only be changed by creating a new profile JSON and changing the corresponding text record via an Ethereum transaction (if published on layer-1). Storing this information on layer-2 or linked via CCIP ([Cross-Chain Interoperability Protocol](https://chain.link/cross-chain)) using subdomains, is possible, too.
