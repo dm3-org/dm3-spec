@@ -20,3 +20,4 @@ If a delivery service works as a gateway to another protocol or service, it must
 
 ![image](deliveryservice_gateway.svg)
 
+A gateway can also provide multiple delivery service nodes as primary and fallback services.
