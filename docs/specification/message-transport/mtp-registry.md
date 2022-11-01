@@ -79,6 +79,7 @@ The mutableProfileExtension (optional) contains, if available, additional config
 * **Minimum Balance Token Address:** If the balance is not defined in Ether, the address of the token contract needs to be declared. If Ether is used, this fields stays empty.
 * **Encryption Algorithm:** the default encryption algorithm is **x25519-chacha20-poly1305**. If another encryption algorithm needs to be used (e.g., because this is needed for an ecosystem which is integrated into **dm3**), this can be requested. The default algorithm must be accepted, too. Otherwise, it might be impossible for a sender to deliver a message when it doesn't support the requested algorithm.
 This is a list of supported algorithms, sorted by importance. All listed algorithms must be supported by the receiver. The sender is free to choose but should use reveivers preferrences if supported.
+* **Not supported Messsage Types:** the receiver can inform that the client he/she uses is not supporting any of the optional message types (see [message data structure](mtp-transport.md#message_data_structure)). The sender must not send such messages, as the receiver will not accept those messages.
 
 **DEFINITION:** mutableProfileExtension
 
@@ -97,6 +98,9 @@ This is a list of supported algorithms, sorted by importance. All listed algorit
   // Request of a specific ancryption algorithm.
   // (optional)
   encryptionAlgorithm: string[],
+  // List not sopported message types
+  // (optional)
+  notSupportedMessageTypes: string[],
 }
 ```
 
@@ -106,7 +110,8 @@ This is a list of supported algorithms, sorted by importance. All listed algorit
 > {
 >    "minNonce":"1",
 >    "minBalance":"1000000000000000000",
->    "encryptionAlgorithm": ["x25519-chacha20-poly1305"]
+>    "encryptionAlgorithm": ["x25519-chacha20-poly1305"],
+>    "notSupportedMesssageTypes": ["EDIT", "READ_RECEIPT","RESEND_REQUEST"],
 > }
 > ```
 
