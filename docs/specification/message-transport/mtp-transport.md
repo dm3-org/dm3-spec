@@ -128,7 +128,7 @@ The message datastructure contains the following information:
    // message creation timestamp
    timestamp: number,
    // message text
-   // optional (not needed for messages of type READ_RECEIPT, DELETE_REQUEST, and RESEND_REQUEST)
+   // optional (not needed for messages of type READ_RECEIPT, DELETE_REQUEST, and)
    message: string,
    // specifies the message type
    type: "NEW" | "DELETE_REQUEST" | "EDIT" | "REPLY" | "REACTION" | "READ_RECEIPT" | "RESEND_REQUEST"
