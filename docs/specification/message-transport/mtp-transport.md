@@ -3,7 +3,7 @@
 Sending (and receiving) a message takes place in 3 steps, although only the first two steps are part of the **dm3 Message Transfer Protocol**.
 
 1. The sender app **prepares and sends the message to the receiver's delivery service**. If the primary delivery service (first in the list) is not available, the next one from the list is contacted (and so on).
-2. The **delivery service buffers and processes the message** (checks envelop, creates postmark to protocol time of delivery, optionally sends notification to receiver, ...).
+2. The **delivery service buffers and processes the message** (checks envelope, creates postmark to protocol time of delivery, optionally sends notification to receiver, ...).
 3. _The **message is picked up by the recipient**. As soon as the recipient reports the successful processing of the message to the delivery service, the latter deletes the buffered message.
 **!!!** This is not part of the "Message Transfer Protocol", as this depends on the implementation and objective of the delivery service. If the delivery service is following the **dm3 Access Specification** to serve **dm3** compatible clients, it offers a REST API to retrieve the messages, but a delivery service may also act as interface to another protocol or application ecosystem, handling incoming messages according to its rules. **!!!**_
 
@@ -168,18 +168,18 @@ The attachment data structure contains:
 }
 ```
 
-## Encryption Envelop Data Structure
+## Encryption Envelope Data Structure
 
-The encryption envelop is the data structure which is sent to the delivery service. It contains delivery metadata and the encrypted message itself. The envelop is read and interpreted by the delivery service. However, the actual message is encrypted with the receivers key and signed with the senders key so that it cannot be read or altered by the delivery service.
+The encryption envelope is the data structure which is sent to the delivery service. It contains delivery metadata and the encrypted message itself. The envelope is read and interpreted by the delivery service. However, the actual message is encrypted with the receivers key and signed with the senders key so that it cannot be read or altered by the delivery service.
 
-The encryption envelop contains the following data:
+The encryption envelope contains the following data:
 
 * **Version:** the protocol version of **dm3**.
 * **Message:** the encrypted message (Message Data Structure).
 * **Delivery Information:** a data struct with the delivery information needed by the delivery service (message meta data).
 * **Postmark:** a data struct with the information of the delivery status. It is added by the delivery service and is encrypted with the public key of the receiver.
 
-**DEFINITION:** Encryption Envelop
+**DEFINITION:** Encryption Envelope
 
 ```JavaScript
 {
@@ -232,8 +232,8 @@ It contains the following information:
 
 ```JavaScript
 {
-  // if unecrypted sha256( safe-stable-stringify( EncryptionEnvelop.message ) ) 
-  // if encrypted sha256( EncryptionEnvelop.message ) 
+  // if unecrypted sha256( safe-stable-stringify( EncryptionEnvelope.message ) ) 
+  // if encrypted sha256( EncryptionEnvelope.message ) 
   messageHash: string,
   // timestamp of when the delivery service received the message
   incommingTimestamp: number,

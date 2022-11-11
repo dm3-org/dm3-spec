@@ -98,7 +98,7 @@ This is a list of supported algorithms, sorted by importance. All listed algorit
   // Request of a specific ancryption algorithm.
   // (optional)
   encryptionAlgorithm: string[],
-  // List not sopported message types
+  // List not supported message types
   // (optional)
   notSupportedMessageTypes: string[],
 }
