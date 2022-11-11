@@ -3,11 +3,11 @@
 Sending (and receiving) a message takes place in 3 steps, although only the first two steps are part of the **dm3 Message Transfer Protocol**.
 
 1. The sender app **prepares and sends the message to the receiver's delivery service**. If the primary delivery service (first in the list) is not available, the next one from the list is contacted (and so on).
-2. The **delivery service buffers and processes the message** (checks envelop, creates postmark to protocol time of delivery, optionally sends notification to receiver, ...).
+2. The **delivery service buffers and processes the message** (checks envelope, creates postmark to protocol time of delivery, optionally sends notification to receiver, ...).
 3. _The **message is picked up by the recipient**. As soon as the recipient reports the successful processing of the message to the delivery service, the latter deletes the buffered message.
 **!!!** This is not part of the "Message Transfer Protocol", as this depends on the implementation and objective of the delivery service. If the delivery service is following the **dm3 Access Specification** to serve **dm3** compatible clients, it offers a REST API to retrieve the messages, but a delivery service may also act as interface to another protocol or application ecosystem, handling incoming messages according to its rules. **!!!**_
 
-![image](principle.png)
+![image](principle.svg)
 
 ## Workflow
 
@@ -101,20 +101,21 @@ The message data structure stores all data belonging to the message that can onl
 The message datastructure contains the following information:
 
 * **To:** The ENS name the message is sent to.
-* **From:** the ENS name of the sender
-* **Timestamp:** the timestamp (unixtime) when the message was created.
-* **Message:** this string contains the actual message. For service messages (like READ_RECEIPT or DELETE_REQUEST), this field may be empty.
+* **From:** The ENS name of the sender
+* **Timestamp:** The timestamp (unixtime) when the message was created.
+* **Message:** This string contains the actual message. For service messages (like READ_RECEIPT or DELETE_REQUEST), this field may be empty.
 * **Type:** Different types of messages can be sent. A **dm3** compatible messenger may not support all types in the UI but must at least handle not interpreted types meaningful (_example: the messenger doesn't support editing existing messages. It appends messages with the type **EDIT** as new messages at the bottom of the conversation_).
-  * **NEW:** a new message
-  * **DELETE_REQUEST:** This is a service message. The sender wants the referenced message deleted. The value **referenceMessageHash** points to the message to be deleted. If receiver's messenger doesn't support deletion of messages, it may ignore the message.
-  * **EDIT:** An already existing (old) message was edited (new version). The value **referenceMessageHash** points to the message to be replaced with a new version. If edit is not supported by the receiver's messenger, the message must be added as new.
-  * **THREAD_POST:** This message is a direct reply to an existing message. The value **referenceMessageHash** points to the referenced message. If threads/references are not supported, it must be added as new message.
-  * **REACTION:** This is a short referenced message, containing an emoji as **message** and the value **referenceMessageHash** points to the referenced message.
-  * **READ_RECEIPT:** This is a service message. The receiver sends this message back to the sender to signal that the message was received and displayed. Sending this message is optional and it may be ignored.
-* **Reference Message Hash:** The hash of a previous message that the new one references. Must be set for message types (THREAD_POST, DELETE_REQUEST, EDIT, REACTION).
+  * **NEW:** A new message.
+  * **DELETE_REQUEST:** _(OPTIONAL)_ This is a service message. The sender wants the referenced message deleted. The value **referenceMessageHash** points to the message to be deleted. If receiver's messenger doesn't support deletion of messages, it may ignore the message.
+  * **EDIT:** _(OPTIONAL)_ An already existing (old) message was edited (new version). The value **referenceMessageHash** points to the message to be replaced with a new version. If edit is not supported by the receiver's messenger, the message must be added as new.
+  * **REPLY:** _(OPTIONAL)_ This message is a direct reply to an existing message. The value **referenceMessageHash** points to the referenced message. If threads/references are not supported, it must be added as new message.
+  * **REACTION:** _(OPTIONAL)_ This is a short referenced message, containing an emoji as **message** and the value **referenceMessageHash** points to the referenced message.
+  * **READ_RECEIPT:** _(OPTIONAL)_ This is a service message. The receiver sends this message back to the sender to signal that the message was received and displayed. Sending this message is optional and it may be ignored.
+  * **RESEND_REQUEST:** _(OPTIONAL)_ This is a service message. The value **referenceMessageHash** points to the referenced message. If possible (=available), the referenced message should be sent again.
+* **Reference Message Hash:** The hash of a previous message that the new one references. Must be set for message types (REPLY, DELETE_REQUEST, EDIT, REACTION, RESEND_REQUEST).
 * **Attachments:** Media or other files may be an attachment to a message. Attachments are described in detail below.
 * **Reply Delivery Instruction:** this is an optional information. It is needed for compatibility reasons with other protocols/apps. The stored information will be delivered with any reply (e.g., a conversation or topic id, ...). It is neighter evaluated nor altered from **dm3**.
-* **Signature:** This is the signature with the sender's signature key on the keccak256 hash of the message datastructure without the signature field.
+* **Signature:** This is the signature with the sender's signature key on the SHA-256 hash of the message datastructure without the signature field.
 
 **DEFINITION:** Message Data Structure
 
@@ -127,10 +128,10 @@ The message datastructure contains the following information:
    // message creation timestamp
    timestamp: number,
    // message text
-   // optional (not needed for messages of type READ_RECEIPT and DELETE_REQUEST)
+   // optional (not needed for messages of type READ_RECEIPT, DELETE_REQUEST, and RESEND_REQUEST)
    message: string,
    // specifies the message type
-   type: "NEW" | "DELETE_REQUEST" | "EDIT" | "THREAD_POST" | "REACTION" | "READ_RECEIPT"
+   type: "NEW" | "DELETE_REQUEST" | "EDIT" | "REPLY" | "REACTION" | "READ_RECEIPT" | "RESEND_REQUEST"
    // message hash of the reference message
    // optional (not needed for messages of type NEW)
    referenceMessageHash: string,
@@ -140,7 +141,7 @@ The message datastructure contains the following information:
    // instructions used by the receiver of the message on how to send a reply
    // optional (e.g., used for bridging messages to other protocols)
    replyDeliveryInstruction: string,
-   // sign( keccak256( safe-stable-stringify( message_without_sig ) ) )
+   // sign( sha256( safe-stable-stringify( message_without_sig ) ) )
    signature: string
 }
 ```
@@ -167,18 +168,18 @@ The attachment data structure contains:
 }
 ```
 
-## Encryption Envelop Data Structure
+## Encryption Envelope Data Structure
 
-The encryption envelop is the data structure which is sent to the delivery service. It contains delivery metadata and the encrypted message itself. The envelop is read and interpreted by the delivery service. However, the actual message is encrypted with the receivers key and signed with the senders key so that it cannot be read or altered by the delivery service.
+The encryption envelope is the data structure which is sent to the delivery service. It contains delivery metadata and the encrypted message itself. The envelope is read and interpreted by the delivery service. However, the actual message is encrypted with the receivers key and signed with the senders key so that it cannot be read or altered by the delivery service.
 
-The encryption envelop contains the following data:
+The encryption envelope contains the following data:
 
 * **Version:** the protocol version of **dm3**.
 * **Message:** the encrypted message (Message Data Structure).
 * **Delivery Information:** a data struct with the delivery information needed by the delivery service (message meta data).
 * **Postmark:** a data struct with the information of the delivery status. It is added by the delivery service and is encrypted with the public key of the receiver.
 
-**DEFINITION:** Encryption Envelop
+**DEFINITION:** Encryption Envelope
 
 ```JavaScript
 {
@@ -223,7 +224,7 @@ The postmark data structure contains information added by the delivery service r
 
 It contains the following information:
 
-* **Massage Hash:** the Hash (keccak256) of the entire message.
+* **Massage Hash:** the Hash (SHA-256) of the entire message.
 * **Incomming Timestamp:** The unix time when the delivery service received the message.
 * **Signature:** the signature of the postmark from the delivery service. This is needed to validate the postmark information.
 
@@ -231,12 +232,12 @@ It contains the following information:
 
 ```JavaScript
 {
-  // if unecrypted keccak256( safe-stable-stringify( EncryptionEnvelop.message ) ) 
-  // if encrypted keccak256( EncryptionEnvelop.message ) 
+  // if unecrypted sha256( safe-stable-stringify( EncryptionEnvelope.message ) ) 
+  // if encrypted sha256( EncryptionEnvelope.message ) 
   messageHash: string,
   // timestamp of when the delivery service received the message
   incommingTimestamp: number,
-  // sign( keccak256( safe-stable-stringify( postmark_without_sig ) ) )
+  // sign( sha256( safe-stable-stringify( postmark_without_sig ) ) )
   signature: string
 }
 ```

@@ -14,11 +14,11 @@ The **dm3** protocol uses **ENS** as general registry. The following text record
 The text records MUST either contain
 
 * The profile JSON string defined below, or
-* A URL pointing to a profile JSON object. To validate the integrity of the resolved profile JSON string, the URL MUST be a native IPFS URL or a URL containing a `dm3Hash` parameter containing the Keccak-256 hash of the JSON.
+* A URL pointing to a profile JSON object. To validate the integrity of the resolved profile JSON string, the URL MUST be a native IPFS URL or a URL containing a `dm3Hash` parameter containing the **SHA-256** hash of the JSON.
 
 > **Example** `eth.dm3.profile` text record entries:
 >
-> * `https://delivery.dm3.network/profile/0xbcd6de065fd7...b3cc?dm3Hash=0x84f8...b50c8`
+> * `https://delivery.dm3.network/profile/0xbcd6de065fd7...b3cc?dm3Hash=ab84f8...b50c8`
 > * `ipfs://bafybeiemxf5abjwjz3e...vfyavhwq/`
 
 The profiles can only be changed by creating a new profile JSON and changing the corresponding text record via an Ethereum transaction (if published on layer-1). Storing this information on layer-2 or linked via CCIP ([Cross-Chain Interoperability Protocol](https://chain.link/cross-chain)) using subdomains, is possible, too.
@@ -72,13 +72,14 @@ The user profile MAY contain (optional) a
 > }
 > ```
 
-The mutableProfileExtension (optional) conatains, if available, additional configuration information of the receiver:
+The mutableProfileExtension (optional) contains, if available, additional configuration information of the receiver:
 
 * **Minimum Nonce:** the sender's address (address linked to the ENS domain) must have a nonce higher than this value, showing that this is a used account.
 * **Minimum Balance:** the sender's address holds more than a defined minimum in Ether or another token, as specified in Minimum Token Address.
 * **Minimum Balance Token Address:** If the balance is not defined in Ether, the address of the token contract needs to be declared. If Ether is used, this fields stays empty.
 * **Encryption Algorithm:** the default encryption algorithm is **x25519-chacha20-poly1305**. If another encryption algorithm needs to be used (e.g., because this is needed for an ecosystem which is integrated into **dm3**), this can be requested. The default algorithm must be accepted, too. Otherwise, it might be impossible for a sender to deliver a message when it doesn't support the requested algorithm.
 This is a list of supported algorithms, sorted by importance. All listed algorithms must be supported by the receiver. The sender is free to choose but should use reveivers preferrences if supported.
+* **Not supported Messsage Types:** the receiver can inform that the client he/she uses is not supporting any of the optional message types (see [message data structure](mtp-transport.md#message_data_structure)). The sender must not send such messages, as the receiver will not accept those messages.
 
 **DEFINITION:** mutableProfileExtension
 
@@ -97,6 +98,9 @@ This is a list of supported algorithms, sorted by importance. All listed algorit
   // Request of a specific ancryption algorithm.
   // (optional)
   encryptionAlgorithm: string[],
+  // List not supported message types
+  // (optional)
+  notSupportedMessageTypes: string[],
 }
 ```
 
@@ -106,7 +110,8 @@ This is a list of supported algorithms, sorted by importance. All listed algorit
 > {
 >    "minNonce":"1",
 >    "minBalance":"1000000000000000000",
->    "encryptionAlgorithm": ["x25519-chacha20-poly1305"]
+>    "encryptionAlgorithm": ["x25519-chacha20-poly1305"],
+>    "notSupportedMesssageTypes": ["EDIT", "READ_RECEIPT","RESEND_REQUEST"],
 > }
 > ```
 
