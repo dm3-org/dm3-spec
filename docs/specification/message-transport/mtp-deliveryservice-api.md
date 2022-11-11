@@ -17,11 +17,11 @@ dm3_submitMessage
 
 ### Request
 
-The request delivers the encrypted envelope containing the message itself and the delivery information as [EncryptionEnvelop](mtp-transport.md#encryption-envelop-data-structure).
+The request delivers the encrypted envelope containing the message itself and the delivery information as [EncryptionEnvelope](mtp-transport.md#encryption-envelope-data-structure).
 
 ```TypeScript
-// see description of EncryptionEnvelop data structure
-EncryptionEnvelop
+// see description of EncryptionEnvelope data structure
+EncryptionEnvelope
 ```
 
 ### Response
@@ -30,7 +30,7 @@ EncryptionEnvelop
 success: boolean
 ```
 
-The response is true, if the delivery service received the envelop with the message. It is still ``true``, if the message does not fit the spam parameters (like minNonce or minBalance) and is recarded.
+The response is true, if the delivery service received the envelope with the message. It is still ``true``, if the message does not fit the spam parameters (like minNonce or minBalance) and is recarded.
 The response is ``false``, if the envelope can't be opended and interpreted by the delivery service.
 
 ## Get Properties of the Delivery Service
@@ -46,17 +46,17 @@ dm3_getDeliveryServiceProperties
 
 ### Response
 
-* **Message TTL:** Defines, how long the delivery service guarantees to cache a message. After the guaranteed time, the message MAY be removed, even if it was not picked up by the receiver. The minimum MUST be 1 month. If the value is not set, messages will cached unlimited (default).
+* **Message TTL:** Defines, how long the delivery service guarantees to cache a message. After the guaranteed time, the message MAY be removed, even if it was not picked up by the receiver. The minimum MUST be 30 days. If the value is not set, or set to 0 or null, messages will cached unlimited (default).
 * **Size Limit:** Each delivery service can define a maximum size of incoming messages. As the content of the message incl. attachments is encrypted for the receiver, the delivery service can't restrict attachments or other embedded data by its content. The only way is to restrict the total size of the message.
 A sender MUST check this property before sending the message, otherwise the message may be rejected.
 
 ```TypeScript
 {
     // Number of days a delivery service must buffer a message
-    // The message should be deleted if: incoming_timestamp_in_ms + days_to_ms(messageTTL) < now_in_ms
+    // The message may be deleted if: incoming_timestamp_in_ms + days_to_ms(messageTTL) < now_in_ms
     messageTTL: number;
   
-    // The delivery service accepts only envelops which fulfill the following condition: sizeInBytes(envelop) <= sizeLimit
+    // The delivery service accepts only envelopes which fulfill the following condition: sizeInBytes(envelope) <= sizeLimit
     sizeLimit: number; 
 }
 ```
