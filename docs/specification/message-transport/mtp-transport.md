@@ -89,11 +89,18 @@ _if available:_
     actor A as Alice
     participant AA as Alice' Client
     participant BD as Bobs's Delivery Service
+    participant CC as Alice' Data Storage Service
     participant BB as Bob's Client   
     A-->>AA: writes message
     AA->>BD: dm3_getProfileExtension
     BD-->>AA: retrieve Bob's "profileExtension"
     AA->>AA: prepare message
+    opt
+      AA->>AA: prepare attachments
+      opt
+        AA-->>CC: store attachment data at service or IPFS
+      end
+    end
     AA->>BD: dm3_getDeliveryServiceProperties
     BD-->>AA: retrieve the delivery service' properties
     AA->>AA: prepare envelope
