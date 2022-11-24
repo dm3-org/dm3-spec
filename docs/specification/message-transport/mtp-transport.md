@@ -17,14 +17,22 @@ Sending (and receiving) a message takes place in 3 steps, although only the firs
 
 1. Read the `eth.dm3.profile` text record of the receiver's ENS name.
 If the profile record is not set, the message cannot be delivered. It has to stay with the sender until the potential receiver publishes his/her profile.
-2. If the content of the text record is a URL (IPFS or service), read the file's content.
-   * IPFS: retrieve JSON object using IPFS network.
-   * Service: retrieve JSON object from server and use the `dm3Hash` URL parameter to check the integrity of the profile string.
+2. The content is specified as URI (Uniform Resource Identifier). The following types must be supported:
+   1. **DATA:** The content is delivered as JSON. The data scheme MUST be `application/json`. Optionally, the json content is **base64** encoded. This must be specified as scheme extension `application/json;base64`. If not base64 encoded, the content MUST be URL-encoded.
+   _**Example:**_
+   `data:application/json,%7B%22profileRegistryEntry%22%3A... }`
+   `data:application/json;base64,eyJwdWJsaWNFbmNyeX...`
+   2. **HTTPS:** The content is retrieved as JSON object from a server and the `dm3Hash` URL parameter is used to check the integrity of the profile string.
+   _**Example:**_
+   `https://exampleserver/example?dm3Hash=0x12ab4...`
+   3. **IPFS:** The content is retrieved as JSON object using IPFS network.
+   _**Example:**_
+   `ipfs://QmU6n6n1Q...`
+
 3. Interprete JSON object as **dm3 profile**.
 4. Select the receiver's delivery service ENS name by reading the `deliverySerives` user profile entry at index `0`.
-   1. Get the `eth.dm3.deliveryService` text record of the delivery service's ENS name.
-   2. If the content of the text record is an URL (IPFS or service), read the file's content (as described above in point 2).
-   3. Interprete JSON object as **dm3 delivery service profile**.
+   1. Get the `eth.dm3.deliveryService` text record of the delivery service's ENS name. The content is delivered as URI (data, https, or ipfs), as described above in point 2.
+   2. Interprete JSON object as **dm3 delivery service profile**.
 5. If the selected delivery service is unavailable, the sender MUST use the delivery service with the next higher index in the `deliveryServices` list as fallback.
 
 **Create Message and Envelope**
@@ -39,7 +47,7 @@ _if available:_
 ```{mermaid}
   sequenceDiagram
     participant AA as Alice' Client
-    participant E as ENS
+    participant E as Registry (ENS)
     participant P as Profile Storage (e.g. IPFS)
     AA->>E: get eth.dm3.profile for Bob's ENS name
     E-->>AA: eth.dm3.profile text record
@@ -82,8 +90,13 @@ _if available:_
     participant AA as Alice' Client
     participant BD as Bobs's Delivery Service
     participant BB as Bob's Client   
-    A->>AA: writes message
+    A-->>AA: writes message
+    AA->>BD: dm3_getProfileExtension
+    BD-->>AA: retrieve Bob's "profileExtension"
     AA->>AA: prepare message
+    AA->>BD: dm3_getDeliveryServiceProperties
+    BD-->>AA: retrieve the delivery service' properties
+    AA->>AA: prepare envelope
     AA->>BD: dm3_submitMessage
     BD->>BD: decrypt deliveryInformation
     BD->>BD: apply filter rules
@@ -113,7 +126,7 @@ The message datastructure contains the following information:
   * **READ_RECEIPT:** _(OPTIONAL)_ This is a service message. The receiver sends this message back to the sender to signal that the message was received and displayed. Sending this message is optional and it may be ignored.
   * **RESEND_REQUEST:** _(OPTIONAL)_ This is a service message. The value **referenceMessageHash** points to the referenced message. If possible (=available), the referenced message should be sent again.
 * **Reference Message Hash:** The hash of a previous message that the new one references. Must be set for message types (REPLY, DELETE_REQUEST, EDIT, REACTION, RESEND_REQUEST).
-* **Attachments:** Media or other files may be an attachment to a message. Attachments are described in detail below.
+* **Attachments:** Media or other files may be an attachment to a message as array of URIs (data, https, ipfs). Attachments are described in detail below.
 * **Reply Delivery Instruction:** this is an optional information. It is needed for compatibility reasons with other protocols/apps. The stored information will be delivered with any reply (e.g., a conversation or topic id, ...). It is neighter evaluated nor altered from **dm3**.
 * **Signature:** This is the signature with the sender's signature key on the SHA-256 hash of the message datastructure without the signature field.
 
@@ -149,13 +162,15 @@ The message datastructure contains the following information:
 ## Attachments
 
 Attachments can be any type of additional data or media files. These are organized in the attachment data structure. A message can have no, or an arbitrary number of attachments.
-The overall size of the message (inclusive all attachments) must be less than 20MB. If bigger media files need to be attached, the actual data need to be stored outside the message (still encrypted with the receiver's public key) and the attachment contains only the reference (e.g., an IPFS link).
-Attachments are optional. Different **dm3** compatible application may handle attachments differently (visualization, embedding, or even ignore it).
+The overall size of the message (inclusive all attachments) must be less than 20MB. The overall size of the message can be restricted additionally by the delivery service (see [Delivery Service Properties](mtp-deliveryservice-api.md#get-properties-of-the-delivery-service).)
+If bigger media files need to be attached, the actual data need to be stored outside the message (still encrypted with the receiver's public key) and the attachment contains only the reference (URI with https or ipfs scheme). Otherwise, the attachment may included with URI scheme data.
+Attachments are optional. Different **dm3** compatible applications may handle attachments differently (visualization, embedding, or even ignore it).
+Applications may optionally support other encodings than text/markdown for the message. These may added as attachment and visualized instead of the original message text. It is the application's responisibility to do this properly.
 
 The attachment data structure contains:
 
 * **Type:** the MIME type of the attachment.
-* **Data:** the base64 encoded data of the media file.
+* **Data:** URI of the media file. The data may be embedded as URI scheme _**data**_ or a reference to an external resource. If attachments are added as external resources, those data MUST be encrypted in the same way as the message.
 
 **DEFINITION:** Attachment Data Structure
 
@@ -163,10 +178,40 @@ The attachment data structure contains:
 {
   // MIME types
   type: string,
-  // the data, base64 encoded
-  data: string
+  // the data as URI
+  data: URI
 }
 ```
+
+ _**Examples:**_
+>
+> ```JavaScript
+> {
+>    "type":"text/html",
+>    "data":"data:text/html;base64,dfEwwewGJsaWKklNyeX...",
+> }
+> ```
+
+> ```JavaScript
+> {
+>    "type":"image/jpeg",
+>    "data":"data:image/jpeg;base64,dfEwwewGJsaWKklNyeX...",
+> }
+> ```
+
+> ```JavaScript
+> {
+>    "type":"application/gzip",
+>    "data":"https://exampleservice/exampleresource",
+> }
+> ```
+
+> ```JavaScript
+> {
+>    "type":"text/plain",
+>    "data":" ipfs://AmE6mn1n64Q...",
+> }
+> ```
 
 ## Encryption Envelope Data Structure
 
@@ -225,7 +270,7 @@ The postmark data structure contains information added by the delivery service r
 It contains the following information:
 
 * **Massage Hash:** the Hash (SHA-256) of the entire message.
-* **Incomming Timestamp:** The unix time when the delivery service received the message.
+* **Incoming Timestamp:** The unix time when the delivery service received the message.
 * **Signature:** the signature of the postmark from the delivery service. This is needed to validate the postmark information.
 
 **DEFINITION:** Postmark
@@ -236,7 +281,7 @@ It contains the following information:
   // if encrypted sha256( EncryptionEnvelope.message ) 
   messageHash: string,
   // timestamp of when the delivery service received the message
-  incommingTimestamp: number,
+  incomingTimestamp: number,
   // sign( sha256( safe-stable-stringify( postmark_without_sig ) ) )
   signature: string
 }
