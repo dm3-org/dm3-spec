@@ -26,6 +26,8 @@ The URI can be
 The profiles can only be changed by creating a new profile JSON and changing the corresponding text record via an Ethereum transaction (if published on layer-1). Storing this information on layer-2 or linked via CCIP ([Cross-Chain Interoperability Protocol](https://chain.link/cross-chain)) using subdomains, is possible, too.
 The specification thereof will be published in protocol extension **Layer-2 Registry Specification**. This is currently under development and will be published soon.
 
+Information read from ENS may be cached for perfomance reasons but the ENS TTL settings must be respected (to be fetched from the resolver).
+
 ## User Profile
 
 The user profile MUST contain:
