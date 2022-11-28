@@ -35,7 +35,9 @@ The response is ``false``, if the envelope can't be opended and interpreted by t
 
 ## Get Properties of the Delivery Service
 
-A **delivery service** provides a set of properties which a sending client must evaluate and observe. These properties can be informative or define that the sender of a message must follow in order for the delivery service to accept the message at all.
+A **delivery service** provides a set of properties which a sending client MUST evaluate and observe. These properties can be informative or define that the sender of a message must follow in order for the delivery service to accept the message at all.
+
+(_**compatibility information:** it replaces the formerly defined mutableProfileExtension provided in the `eth.dm3.profile`_)
 
 ### Methode
 
@@ -60,3 +62,68 @@ A sender MUST check this property before sending the message, otherwise the mess
     sizeLimit: number; 
 }
 ```
+
+## Get the User's Profile Extension
+
+Profile extensions are mutable properties of a receiver (identified by his/her ENS Name, ...) which are not stored in the `eth.dm3.profile` and can be changed without the need of a transaction. As these properties may vary between different delivery services, each delivery service to which the user is connected must provide this information.
+
+### Methode
+
+```TypeScript
+// call to submit a message
+dm3_getProfileExtension
+```
+
+### Request
+
+The request passes the **name** of receiver.
+
+```TypeScript
+// the name of the receiver
+the_name
+```
+
+### Response
+
+The profileExtension contains configuration information of the receiver:
+
+* **Minimum Nonce:** the sender's address (address linked to the ENS domain) must have a nonce higher than this value, showing that this is a used account.
+* **Minimum Balance:** the sender's address holds more than a defined minimum in Ether or another token, as specified in Minimum Token Address.
+* **Minimum Balance Token Address:** If the balance is not defined in Ether, the address of the token contract needs to be declared. If Ether is used, this fields stays empty.
+* **Encryption Algorithm:** the default encryption algorithm is **x25519-chacha20-poly1305**. If another encryption algorithm needs to be used (e.g., because this is needed for an ecosystem which is integrated into **dm3**), this can be requested. The default algorithm MUST be accepted, too. Otherwise, it might be impossible for a sender to deliver a message when it doesn't support the requested algorithm.
+This is a list of supported algorithms, sorted by importance. All listed algorithms MUST be supported by the receiver. The sender is free to choose but should use reveivers preferrences if supported.
+* **Supported Messsage Types:** the receiver MUST provide a list of all **message types** that the client he/she uses is supporting (see [message data structure](mtp-transport.md#message_data_structure)).
+The message type **NEW** MUST be supported always and is set as default in case no information is delivered.
+The sender MUST NOT send unsupported messages, as the receiver will not accept those messages.
+
+```JavaScript
+{
+  // the minimum nonce of the sender's address
+  // (optional)
+  minNonce: string,
+  // the minimum balcance of the senders address 
+  // (optional)
+  minBalance: string,
+  // token address, which shoould be evaluated. 
+  // Empty address means Ether balance.
+  // (optional)
+  minBalanceTokenAddress: string,
+  // Request of a specific ancryption algorithm.
+  // (optional)
+  encryptionAlgorithm: string[],
+  // List of supported message types
+  // (optional)
+  supportedMessageTypes: string[],
+}
+```
+
+> **Example** Profile Exception:
+>
+> ```JavaScript
+> {
+>    "minNonce":"1",
+>    "minBalance":"1000000000000000000",
+>    "encryptionAlgorithm": ["x25519-chacha20-poly1305"],
+>    "supportedMesssageTypes": ["NEW","EDIT", "READ_RECEIPT","RESEND_REQUEST"],
+> }
+> ```
