@@ -18,16 +18,16 @@ Sending (and receiving) a message takes place in 3 steps, although only the firs
 1. Read the `eth.dm3.profile` text record of the receiver's ENS name.
 If the profile record is not set, the message cannot be delivered. It has to stay with the sender until the potential receiver publishes his/her profile.
 2. The content is specified as URI (Uniform Resource Identifier). The following types must be supported:
-   1. **DATA:** The content is delivered as JSON. The data scheme MUST be `application/json`. Optionally, the json content is **base64** encoded. This must be specified as scheme extension `application/json;base64`. If not base64 encoded, the content MUST be URL-encoded.
-   _**Example:**_
-   `data:application/json,%7B%22profileRegistryEntry%22%3A... }`
-   `data:application/json;base64,eyJwdWJsaWNFbmNyeX...`
+   1. **DATA:** The content is delivered as JSON. The data scheme MUST be `application/json`. Optionally, the json content is **base64** encoded. This must be specified as scheme extension `application/json;base64`. If not base64 encoded, the content might be URL-encoded.
+   > _**Example:**_
+   > `data:application/json,%7B%22profileRegistryEntry%22%3A...`
+   > `data:application/json;base64,eyJwdWJsaWNFbmNyeX...`
    2. **HTTPS:** The content is retrieved as JSON object from a server and the `dm3Hash` URL parameter is used to check the integrity of the profile string.
-   _**Example:**_
-   `https://exampleserver/example?dm3Hash=0x12ab4...`
+   > _**Example:**_
+   > `https://exampleserver/example?dm3Hash=0x12ab4...`
    3. **IPFS:** The content is retrieved as JSON object using IPFS network.
-   _**Example:**_
-   `ipfs://QmU6n6n1Q...`
+   > _**Example:**_
+   > `ipfs://QmU6n6n1Q...`
 
 3. Interprete JSON object as **dm3 profile**.
 4. Select the receiver's delivery service ENS name by reading the `deliverySerives` user profile entry at index `0`.
@@ -202,6 +202,8 @@ The encryption envelope contains the following data:
 
 * **Version:** the protocol version of **dm3**.
 * **Message:** the encrypted message (Message Data Structure).
+* **Encryption Algorithm:** the used encryption algorithm. Default is **x25519-chacha20-poly1305**. If this field is not set (undefinded), the default is being used.
+* **Signature Algorithm:** the used algorithm for the signature. Default is **???**. If this field is not set (undefinded), the default is being used.
 * **Delivery Information:** a data struct with the delivery information needed by the delivery service (message meta data).
 * **Postmark:** a data struct with the information of the delivery status. It is added by the delivery service and is encrypted with the public key of the receiver.
 
@@ -211,6 +213,10 @@ The encryption envelope contains the following data:
 {
   // dm3 protocol version
   version: '1.0'
+  // used encryption algorithm
+  encryptionAlgorithm: string;
+  //used signature algorithm
+  signatureAlgorithm: string;
   // if private message: encrypted with receiver public encryption key
   message: string; 
   // datastruct with delivery info
