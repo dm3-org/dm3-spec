@@ -210,7 +210,7 @@ The encryption envelope contains the following data:
 ```JavaScript
 {
   // dm3 protocol version
-  version: '0.1'
+  version: '1.0'
   // if private message: encrypted with receiver public encryption key
   message: string; 
   // datastruct with delivery info
