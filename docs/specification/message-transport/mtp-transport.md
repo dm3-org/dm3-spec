@@ -155,9 +155,9 @@ The message datastructure contains the following information:
    // message hash of the reference message
    // optional (not needed for messages of type NEW)
    referenceMessageHash: string,
-   // message attachments e.g. images
+   // message attachments e.g. images as array of URIs
    // optional
-   attachments: Attachment[],
+   attachments: string[],
    // instructions used by the receiver of the message on how to send a reply
    // optional (e.g., used for bridging messages to other protocols)
    replyDeliveryInstruction: string,
@@ -168,56 +168,30 @@ The message datastructure contains the following information:
 
 ## Attachments
 
-Attachments can be any type of additional data or media files. These are organized in the attachment data structure. A message can have no, or an arbitrary number of attachments.
-The overall size of the message (inclusive all attachments) must be less than 20MB. The overall size of the message can be restricted additionally by the delivery service (see [Delivery Service Properties](mtp-deliveryservice-api.md#get-properties-of-the-delivery-service).)
-If bigger media files need to be attached, the actual data need to be stored outside the message (still encrypted with the receiver's public key) and the attachment contains only the reference (URI with https or ipfs scheme). Otherwise, the attachment may included with URI scheme data.
-Attachments are optional. Different **dm3** compatible applications may handle attachments differently (visualization, embedding, or even ignore it).
-Applications may optionally support other encodings than text/markdown for the message. These may added as attachment and visualized instead of the original message text. It is the application's responisibility to do this properly.
+Attachments can be any type of additional data or media files. These are organized as array of URIs. Embedded content is encoded as data scheme, external data as URL or IPFS. A message can have no, or an arbitrary number of attachments.
+The overall size of the message (inclusive all embedded attachments) MUST be less than 20MB. The overall size of the message can be restricted additionally by the delivery service (see [Delivery Service Properties](mtp-deliveryservice-api.md#get-properties-of-the-delivery-service).)
+If bigger media files need to be attached, the actual data need to be stored outside the message (still encrypted with the receiver's public key) and the attachment contains only the reference (URI with https or ipfs scheme). Otherwise, the attachment may be included with URI scheme data.
 
-The attachment data structure contains:
+Different **dm3** compatible applications may handle attachments differently (visualization, embedding, or even ignore it).
+Applications may optionally support other encodings than text/markdown for the message. These may be added as attachment and visualized instead of the original message text. It is the application's responisibility to do this properly.
 
-* **Type:** the MIME type of the attachment.
-* **Data:** URI of the media file. The data may be embedded as URI scheme _**data**_ or a reference to an external resource. If attachments are added as external resources, those data MUST be encrypted in the same way as the message.
-
-**DEFINITION:** Attachment Data Structure
-
-```JavaScript
-{
-  // MIME types
-  type: string,
-  // the data as URI
-  data: URI
-}
-```
 
  _**Examples:**_
 >
 > ```JavaScript
-> {
->    "type":"text/html",
->    "data":"data:text/html;base64,dfEwwewGJsaWKklNyeX...",
-> }
+> "attachments":["data:text/html;base64,dfEwwewGJsaWKklNyeX...",...],
 > ```
 
 > ```JavaScript
-> {
->    "type":"image/jpeg",
->    "data":"data:image/jpeg;base64,dfEwwewGJsaWKklNyeX...",
-> }
+> "attachments":["data:image/jpeg;base64,dfEwwewGJsaWKklNyeX...",...],
 > ```
 
 > ```JavaScript
-> {
->    "type":"application/gzip",
->    "data":"https://exampleservice/exampleresource",
-> }
+> "attachments":["https://exampleservice/exampleresource",...],
 > ```
 
 > ```JavaScript
-> {
->    "type":"text/plain",
->    "data":" ipfs://AmE6mn1n64Q...",
-> }
+> "attachments":["ipfs://AmE6mn1n64Q...",...],
 > ```
 
 ## Encryption Envelope Data Structure
