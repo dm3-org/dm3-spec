@@ -16,14 +16,12 @@ The URI can be
 
 * A data scheme (_data:..._) or
 * A URL pointing to a profile JSON object (_https:... or ipfs:..._). To validate the integrity of the resolved profile JSON string, the URL MUST be a native IPFS URL or a URL containing a `dm3Hash` parameter containing the **SHA-256** hash of the JSON.
-* A dm3 reference scheme as redirection to another ENS name (_dm3:name.eth_). In this case, the profile record of the referenced ENS name is evaluated.
 
 > **Example** `eth.dm3.profile` text record entries:
 >
 > * `data:application/json,{profile...`
 > * `https://delivery.dm3.network/profile/0xbcd6de065fd7...b3cc?dm3Hash=ab84f8...b50c8`
 > * `ipfs://bafybeiemxf5abjwjz3e...vfyavhwq/`
-> * `dm3:anothername.eth`
 
 The profiles can only be changed by creating a new profile JSON and changing the corresponding text record via an Ethereum transaction (if published on layer-1). Storing this information on layer-2 or linked via CCIP ([Cross-Chain Interoperability Protocol](https://chain.link/cross-chain)) using subdomains, is possible, too.
 The specification thereof will be published in protocol extension **Layer-2 Registry Specification**. This is currently under development and will be published soon.
