@@ -28,6 +28,9 @@ If the profile record is not set, the message cannot be delivered. It has to sta
    3. **IPFS:** The content is retrieved as JSON object using IPFS network.
    > _**Example:**_
    > `ipfs://QmU6n6n1Q...`
+   4. **DM3:** This is a redirection to another ENS name. The profile of the referenced name is evaluated. Using this allows redirection to another subdomain or referencing from multiple ENS names to one resource.
+   > _**Example:**_
+   > `dm3://othername.eth`
 
 3. Interprete JSON object as **dm3 profile**.
 4. Select the receiver's delivery service ENS name by reading the `deliverySerives` user profile entry at index `0`.
