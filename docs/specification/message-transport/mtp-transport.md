@@ -116,14 +116,42 @@ _if available:_
 
 ## Message Data Structure
 
-The message data structure stores all data belonging to the message that can only be read by the receiver. The entire data structure is encrypted with the public key of the receiver.
+The message data structure stores all data belonging to the message that can only be read by the receiver. The entire data structure is encrypted (based on the public key of the receiver).
 
 The message datastructure contains the following information:
+
+* **Message:** This string contains the actual message. For service messages (like READ_RECEIPT or DELETE_REQUEST), this field may be empty or undefined. The message MUST be **plain text** (UTF-8), optionally flavoured with **Markdown** highlightings. If other encodings of the message are provided, those MUST be attached as attachment (embedded with data scheme only), still providing the text representation in the message string. Clients able to interprete the encoded attachment may display the this instead of the original message string. Others will visualize the message text as plain text or Markdown formatting.
+* **Metadata:** This object contains all meta information to the message. Some attributes are mandatory, others are optional. Also, application specific attributes can be added. The [MessageMetadata Structure](#message-meta-data-structure) is described in detail below.
+* **Attachments:** Media or other files or special encodings of the message may be an attachment to a message, defined as array of URIs (data, https, ipfs). [Attachments](#attachments) are described in detail below.
+* **Signature:** This is the signature with the sender's signature key on the SHA-256 hash of the message datastructure without the signature field.
+
+**DEFINITION:** Message Data Structure
+
+```JavaScript
+{
+   // message text
+   // optional (not needed for messages of type READ_RECEIPT, DELETE_REQUEST, and RESEND_REQUEST)
+   message?: string,
+   // metadata added to the message.
+   metadata: MessageMetadata,
+   // message attachments e.g. images as array of URIs
+   // optional
+   attachments?: string[],
+   //the signature of the sender
+   // sign( sha256( safe-stable-stringify( struct_without_sig ) ) )
+   signature: string
+}
+```
+
+## Message Metadata Structure
+
+The **message metadata structure** stores all meta information belonging to a message. While some attributes are mandatory, others are optional. If needed, application specific meta information may be added, too.
+
+The **message meta data structure** contains the following information:
 
 * **To:** The ENS name the message is sent to.
 * **From:** The ENS name of the sender
 * **Timestamp:** The timestamp (unixtime) when the message was created.
-* **Message:** This string contains the actual message. For service messages (like READ_RECEIPT or DELETE_REQUEST), this field may be empty. The message MUST be **plain text** (UTF-8), optionally flavoured with **Markdown** highlightings. If other encodings of the message are provided, those MUST be attached as attachment, still providing the text representation in the message string. Clients able to interprete the encoded attachment may display the this instead of the original message string. Others will visualize the message text as plain text or Markdown formatting.
 * **Type:** Different types of messages can be sent. A **dm3** compatible messenger may not support all types in the UI but must at least handle not interpreted types meaningful (_example: the messenger doesn't support editing existing messages. It appends messages with the type **EDIT** as new messages at the bottom of the conversation_).
   * **NEW:** A new message.
   * **DELETE_REQUEST:** _(OPTIONAL)_ This is a service message. The sender wants the referenced message deleted. The value **referenceMessageHash** points to the message to be deleted. If receiver's messenger doesn't support deletion of messages, it may ignore the message.
@@ -133,11 +161,9 @@ The message datastructure contains the following information:
   * **READ_RECEIPT:** _(OPTIONAL)_ This is a service message. The receiver sends this message back to the sender to signal that the message was received and displayed. Sending this message is optional and it may be ignored.
   * **RESEND_REQUEST:** _(OPTIONAL)_ This is a service message. The value **referenceMessageHash** points to the referenced message. If possible (=available), the referenced message should be sent again.
 * **Reference Message Hash:** The hash of a previous message that the new one references. Must be set for message types (REPLY, DELETE_REQUEST, EDIT, REACTION, RESEND_REQUEST).
-* **Attachments:** Media or other files may be an attachment to a message as array of URIs (data, https, ipfs). Attachments are described in detail below.
-* **Reply Delivery Instruction:** this is an optional information. It is needed for compatibility reasons with other protocols/apps. The stored information will be delivered with any reply (e.g., a conversation or topic id, ...). It is neighter evaluated nor altered from **dm3**.
-* **Signature:** This is the signature with the sender's signature key on the SHA-256 hash of the message datastructure without the signature field.
+* **Reply Delivery Instruction:** This is an optional information. It is needed for compatibility reasons with other protocols/apps. The stored information MUST be delivered with any reply (e.g., a conversation or topic id, ...) as meta information of the [encryption envelope](#encryption-envelope-data-structure). It is neighter evaluated nor altered from **dm3**.
 
-**DEFINITION:** Message Data Structure
+**DEFINITION:** Message Metadata Structure
 
 ```JavaScript
 {
@@ -147,22 +173,17 @@ The message datastructure contains the following information:
    from: string,
    // message creation timestamp
    timestamp: number,
-   // message text
-   // optional (not needed for messages of type READ_RECEIPT, DELETE_REQUEST, and RESEND_REQUEST)
-   message: string,
    // specifies the message type
    type: "NEW" | "DELETE_REQUEST" | "EDIT" | "REPLY" | "REACTION" | "READ_RECEIPT" | "RESEND_REQUEST"
    // message hash of the reference message
    // optional (not needed for messages of type NEW)
-   referenceMessageHash: string,
-   // message attachments e.g. images as array of URIs
-   // optional
-   attachments: string[],
+   referenceMessageHash?: string,
    // instructions used by the receiver of the message on how to send a reply
    // optional (e.g., used for bridging messages to other protocols)
-   replyDeliveryInstruction: string,
-   // sign( sha256( safe-stable-stringify( message_without_sig ) ) )
-   signature: string
+   replyDeliveryInstruction?: string,
+   // any kind of additional metadata may be added. 
+   // This might be information needed by protocol extensions or app specific meta information.
+   ...
 }
 ```
 
@@ -174,7 +195,6 @@ If bigger media files need to be attached, the actual data need to be stored out
 
 Different **dm3** compatible applications may handle attachments differently (visualization, embedding, or even ignore it).
 Applications may optionally support other encodings than text/markdown for the message. These may be added as attachment and visualized instead of the original message text. It is the application's responisibility to do this properly.
-
 
  _**Examples:**_
 >
@@ -200,29 +220,52 @@ The encryption envelope is the data structure which is sent to the delivery serv
 
 The encryption envelope contains the following data:
 
-* **Version:** the protocol version of **dm3**.
-* **Message:** the encrypted message (Message Data Structure).
-* **Encryption Algorithm:** the used encryption algorithm. Default is **x25519-chacha20-poly1305**. If this field is not set (undefinded), the default is being used.
-* **Signature Algorithm:** the used algorithm for the signature. Default is **???**. If this field is not set (undefinded), the default is being used.
-* **Delivery Information:** a data struct with the delivery information needed by the delivery service (message meta data).
-* **Postmark:** a data struct with the information of the delivery status. It is added by the delivery service and is encrypted with the public key of the receiver.
+* **Message:** The encrypted message ([Message Data Structure](#message-data-structure)).
+* **Metadata:** This object contains all meta information to the envelope. Some attributes are mandatory, others are optional. Also, application specific attributes can be added. The [EnvelopeMetadata Structure](#envelope-metadata-structure) is described in detail below.
+* **Postmark:** A data struct with the information of the delivery status. It is added by the delivery service and is encrypted with the public key of the receiver.
 
-**DEFINITION:** Encryption Envelope
+**DEFINITION:** Encryption Envelope Structure
 
 ```JavaScript
 {
-  // dm3 protocol version
-  version: '1.0'
-  // used encryption algorithm
-  encryptionAlgorithm: string;
-  //used signature algorithm
-  signatureAlgorithm: string;
-  // if private message: encrypted with receiver public encryption key
-  message: string; 
-  // datastruct with delivery info
-  deliveryInformation: DeliveryInformation
+  // the message 
   // encrypted with receiver public encryption key
-  postmark: Postmark
+  message: string,
+  // meta information for the envelope
+  metadata: EnvelopeMetadata,
+  // contains information added by the delivery service
+  // encrypted with receiver public encryption key
+  postmark: Postmark,
+}
+```
+
+## Envelope Metadata Structure
+
+The **envelope metadata structure** stores all meta information belonging to an envelope. While some attributes are mandatory, others are optional. If needed, application specific meta information may be added, too.
+
+The **envelope metadata structure** contains the following data:
+
+* **Version:** The protocol version of **dm3**.
+* **Encryption Algorithm:** The used encryption and signing algorithm. Default is **x25519-chacha20-poly1305**. If this field is not set (undefinded), the default is being used.
+* **Delivery Information:** A data struct with the delivery information needed by the delivery service (message meta data).
+
+**DEFINITION:** Envelope Metadata Structure
+
+```JavaScript
+{
+  // dm3 protocol version (e.g., 1.0)
+  version: string,
+  // used encryption algorithm
+  //optional: if not set, the default x25519-chacha20-poly1305 is taken
+  encryption?: string,
+  // datastruct with delivery info
+  deliveryInformation: DeliveryInformation,
+  // any kind of additional metadata may be added. 
+  // This might be information needed by protocol extensions or app specific meta information.
+  ...
+  // the signature of the sender
+  // sign( sha256( safe-stable-stringify( struct_without_sig ) ) )
+  signature: string,
 }
 ```
 
@@ -246,7 +289,7 @@ The data structure contains the following information:
   from: string,
   // instructions used by the delivery service on how to deliver the message
   // optional (used for bridging messages to other protocols)
-  deliveryInstruction: string
+  deliveryInstruction?: string
 }
 ```
 
@@ -258,6 +301,7 @@ It contains the following information:
 
 * **Massage Hash:** the Hash (SHA-256) of the entire message.
 * **Incoming Timestamp:** The unix time when the delivery service received the message.
+* **Delivery Information:** This is a copy of the delivery information provided in the envelope. As this info in the envelope is encrypted for the delivery service, it MUST be added from the delivery service to the postmark. The receiver can use this information to check, if the sender of the message referenced in the [Message Metadata](#message-metadata-structure)) is the same as referenced in the envelope.
 * **Signature:** the signature of the postmark from the delivery service. This is needed to validate the postmark information.
 
 **DEFINITION:** Postmark
@@ -269,7 +313,10 @@ It contains the following information:
   messageHash: string,
   // timestamp of when the delivery service received the message
   incomingTimestamp: number,
+  // a copy of the delivery information from the envelope the delivery service
+  deliveryInformation: DeliveryInformation,
+  // signature of the delivery serivce
   // sign( sha256( safe-stable-stringify( postmark_without_sig ) ) )
-  signature: string
+  signature: string,
 }
 ```
