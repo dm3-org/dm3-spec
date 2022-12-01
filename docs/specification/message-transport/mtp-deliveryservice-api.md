@@ -92,7 +92,7 @@ The profileExtension contains configuration information of the receiver:
 * **Minimum Balance Token Address:** If the balance is not defined in Ether, the address of the token contract needs to be declared. If Ether is used, this fields stays empty.
 * **Encryption Algorithm:** the default encryption algorithm is **x25519-chacha20-poly1305**. If another encryption algorithm needs to be used (e.g., because this is needed for an ecosystem which is integrated into **dm3**), this can be requested. The default algorithm MUST be accepted, too. Otherwise, it might be impossible for a sender to deliver a message when it doesn't support the requested algorithm.
 This is a list of supported algorithms, sorted by importance. All listed algorithms MUST be supported by the receiver. The sender is free to choose but should use reveivers preferrences if supported.
-* **Supported Messsage Types:** the receiver MUST provide a list of all **message types** that the client he/she uses is supporting (see [message data structure](mtp-transport.md#message_data_structure)).
+* **Supported Message Types:** the receiver MUST provide a list of all **message types** that the client he/she uses is supporting (see [message data structure](mtp-transport.md#message_data_structure)).
 The message type **NEW** MUST be supported always and is set as default in case no information is delivered.
 The sender MUST NOT send unsupported messages, as the receiver will not accept those messages.
 
