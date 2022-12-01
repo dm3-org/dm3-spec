@@ -5,7 +5,7 @@ Sending (and receiving) a message takes place in 3 steps, although only the firs
 1. The sender app **prepares and sends the message to the receiver's delivery service**. If the primary delivery service (first in the list) is not available, the next one from the list is contacted (and so on).
 2. The **delivery service buffers and processes the message** (checks envelope, creates postmark to protocol time of delivery, optionally sends notification to receiver, ...).
 3. _The **message is picked up by the recipient**. As soon as the recipient reports the successful processing of the message to the delivery service, the latter deletes the buffered message.
-**!!!** This is not part of the "Message Transfer Protocol", as this depends on the implementation and objective of the delivery service. If the delivery service is following the **dm3 Access Specification** to serve **dm3** compatible clients, it offers a REST API to retrieve the messages, but a delivery service may also act as interface to another protocol or application ecosystem, handling incoming messages according to its rules. **!!!**_
+**!!!** This is not part of the "Message Transfer Protocol", as this depends on the implementation and objective of the delivery service. If the delivery service is following the **dm3 Access Specification** to serve **dm3** compatible clients, it offers a REST API to retrieve the messages, but a delivery service may also act as interface/gateway to another protocol or application ecosystem, handling incoming messages according to its rules. **!!!**_
 
 ![image](principle.svg)
 
@@ -37,11 +37,11 @@ If the profile record is not set, the message cannot be delivered. It has to sta
 
 **Create Message and Envelope**
 
-1. Get mutableProfileExtensionUrl from **dm3 profile**
-_if available:_
-    * read optional encryption parameters (see also Encryption)
+1. Get ProfileExtension from delivery service
+    * Read optional encryption parameters (like preffered encryption algorithm deviating from standard)
+    * Read supported message types. Only supported messages must be sent.
 2. Sign the message using the private sender signing key, using ECDSA.
-3. Encrypt the message using the public encryption key of the receiver (part of the user profile). Default encryption algorithm is **x25519-chacha20-poly1305**. If a different algorithm is required (defined in the _mutableProfileExtension_), this should be used for encryption. If it is not supported by the sender, the default encryption is used.
+3. Encrypt the message using the public encryption key of the receiver (part of the user profile). Default encryption algorithm is **x25519-chacha20-poly1305**. If a different algorithm is required (defined in the _ProfileExtension_), this should be used for encryption. If it is not supported by the sender, the default encryption is used.
 4. Encrypt the delivery information using the public encryption key of the delivery service (part of the delivery service profile). The mandatory encryption algorithm is **x25519-chacha20-poly1305**.
 
 ```{mermaid}
@@ -56,32 +56,34 @@ _if available:_
       P-->>AA: profileRegistryEntry
       AA->>AA: check profileRegistryEntry integrity
     end
+    AA->>AA: sign message
+    AA->>AA: encrypt message
+
     AA->>E: get eth.dm3.deliveryService of Bob's delivery service
     E-->>AA: eth.dm3.deliveryService text record
-    opt eth.dm3.profile text record is an URL
+    opt eth.dm3.deliveryService text record is an URL
       AA->>P: query delivery service profile 
       P-->>AA: deliveryServiceRegistryEntry
       AA->>AA: check deliveryServiceRegistryEntry integrity
     end
-    AA->>AA: sign message
-    AA->>AA: encrypt message
+   
+    AA->>AA: sign envelope
     AA->>AA: encrypt deliveryInformation
 ```
 
 **Submit Message**
 
-1. Get mutableProfileExtensionUrl from **dm3 profile**
-_if available:_
-    * Read spam protection settings (see Mutable Profile Extension).
+1. Get ProfileExtension from delivery service
+    * Read spam protection settings (see [Profile Extension](mtp-deliveryservice-api.md#get-the-users-profile-extension)).
     * Check, if conditions are met. If not, message must not be sent (as it will be discarded from the receiving delivery service anyway). The sender should be informed.
 2. Submit the message to the delivery service using the URL defined in the delivery service profile.
 
 ### Step 2: Message processing at the delivery service
 
 1. Decrypt delivery information.
-2. Apply filter rules from the receiver's mutable profile extension. Discard the message if conditions are not met.
+2. Apply filter rules from the receiver's profile extension. Discard the message if conditions are not met.
 3. Create a postmark. The postmark protocols the reception and buffering of the message.
-4. Buffer message. The delivery service is responsible to store the encrypted message until the receiver picks it up. A delivery service may decide to have a max holding time. It must be at least 1 month. If the receiver didn't fetch the message within this time, the message may be deleted.
+4. Buffer message. The delivery service is responsible to store the encrypted message until the receiver picks it up. A delivery service may decide to have a max holding time. It must be at least 1 month. If the receiver didn't fetch the message within this time, the message may be deleted. This time can be queried from the [delivery service' properties](mtp-deliveryservice-api.md#get-properties-of-the-delivery-service)
 5. Optional: send notification(s) to the receiver that a message is waiting for delivery.
 
 ```{mermaid}
@@ -120,8 +122,9 @@ The message data structure stores all data belonging to the message that can onl
 
 The message datastructure contains the following information:
 
-* **Message:** This string contains the actual message. For service messages (like READ_RECEIPT or DELETE_REQUEST), this field may be empty or undefined. The message MUST be **plain text** (UTF-8), optionally flavoured with **Markdown** highlightings. If other encodings of the message are provided, those MUST be attached as attachment (embedded with data scheme only), still providing the text representation in the message string. Clients able to interprete the encoded attachment may display the this instead of the original message string. Others will visualize the message text as plain text or Markdown formatting.
-* **Metadata:** This object contains all meta information to the message. Some attributes are mandatory, others are optional. Also, application specific attributes can be added. The [MessageMetadata Structure](#message-meta-data-structure) is described in detail below.
+* **Message:** This string contains the actual message. For service messages (like READ_RECEIPT, RESEND_REQUEST, or DELETE_REQUEST), this field may be empty or undefined. The message MUST be **plain text** (UTF-8), optionally flavoured with **Markdown** highlightings.
+If other encodings of the message are provided, those MUST be attached as attachment (embedded with data scheme only), still providing the text representation in the message string. Clients able to interprete the encoded attachment may display this instead of the original message string. Others will visualize the message text as plain text or Markdown formatting.
+* **Metadata:** This object contains all meta information to the message. Some attributes are mandatory, others are optional. Also, application specific attributes can be added. The [MessageMetadata-Structure](#message-meta-data-structure) is described in detail below.
 * **Attachments:** Media or other files or special encodings of the message may be an attachment to a message, defined as array of URIs (data, https, ipfs). [Attachments](#attachments) are described in detail below.
 * **Signature:** This is the signature with the sender's signature key on the SHA-256 hash of the message datastructure without the signature field.
 
@@ -160,8 +163,8 @@ The **message meta data structure** contains the following information:
   * **REACTION:** _(OPTIONAL)_ This is a short referenced message, containing an emoji as **message** and the value **referenceMessageHash** points to the referenced message.
   * **READ_RECEIPT:** _(OPTIONAL)_ This is a service message. The receiver sends this message back to the sender to signal that the message was received and displayed. Sending this message is optional and it may be ignored.
   * **RESEND_REQUEST:** _(OPTIONAL)_ This is a service message. The value **referenceMessageHash** points to the referenced message. If possible (=available), the referenced message should be sent again.
-* **Reference Message Hash:** The hash of a previous message that the new one references. Must be set for message types (REPLY, DELETE_REQUEST, EDIT, REACTION, RESEND_REQUEST).
-* **Reply Delivery Instruction:** This is an optional information. It is needed for compatibility reasons with other protocols/apps. The stored information MUST be delivered with any reply (e.g., a conversation or topic id, ...) as meta information of the [encryption envelope](#encryption-envelope-data-structure). It is neighter evaluated nor altered from **dm3**.
+* **Reference Message Hash:** _(OPTIONAL)_ The hash of a previous message that the new one references. Must be set for message types (REPLY, DELETE_REQUEST, EDIT, REACTION, RESEND_REQUEST).
+* **Reply Delivery Instruction:** _(OPTIONAL)_ It is needed for compatibility reasons with other protocols/apps. The stored information MUST be delivered with any reply (e.g., a conversation or topic id, ...) as meta information of the [encryption envelope](#encryption-envelope-data-structure). It is neighter evaluated nor altered from **dm3**.
 
 **DEFINITION:** Message Metadata Structure
 
@@ -229,7 +232,7 @@ The encryption envelope contains the following data:
 ```JavaScript
 {
   // the message 
-  // encrypted with receiver public encryption key
+  // encrypted based on the receiver public encryption key
   message: string,
   // meta information for the envelope
   metadata: EnvelopeMetadata,

@@ -1,6 +1,6 @@
 # Registry
 
-A general registry is needed where a **dm3** compatible app, service, or protocol can look up **dm3 profiles** of other users, containing
+A central (but decentralized) registry is needed where a **dm3** compatible app, service, or protocol can lookup **dm3 profiles** of other users, containing
 
 * Public keys,
 * Links to delivery services.
@@ -34,9 +34,11 @@ The user profile MUST contain:
 
 * **Public Signing Key:** Key used to verify a message signature (ECDSA). The public signing key is the public key of an secp256k1 private/public key pair. How to generate or derive this key pair depends on the implementation of the client. The **Encryption and Signing Key Derivation Specification** proposes a method to derive those keys based of a signature of the wallet keys.
 The key is presented as base64-encoded string of the key's bytes (see [key encoding](#key-encoding)).
-* **Public Encryption Key:** Key used to encrypt a message. As default, the algorithm **x25519-chacha20-poly1305** is used. If needed (e.g., for compatibility reasons with an integrated protocol), a different encryption can be specified in the Mutable Profile Extension (see below). Nevertheless, to use the default encryption is highly recommended.
+* **Public Encryption Key:** Public key used to create the key (together with the private key of the sender) to encrypt a message. As default, the algorithm **x25519-chacha20-poly1305** is used (see [**[NIR1]**](../references.md)). If needed (e.g., for compatibility reasons with an integrated protocol), a different encryption can be specified in the [Profile Extension](mtp-deliveryservice-api.md#get-the-users-profile-extension). Nevertheless, to use the default encryption is highly recommended.
 The key is presented as base64-encoded string of the key's bytes (see [key encoding](#key-encoding)).
-* **Delivery Service List:** List with at least one delivery service' ENS name.
+* **Delivery Service List:** List with at least one delivery service' ENS name[^1].
+
+[^1]: Information, how to adapt **dm3** for ecosystems not based on Ethereum, see appendix [Cross Chain Applications](mtp-appendix.md#cross-chain-applications).
 
 **DEFINITION:** UserProfile
 
@@ -61,7 +63,7 @@ The key is presented as base64-encoded string of the key's bytes (see [key encod
 > }
 > ```
 
-Additional to the user profile, the user profile extension can be querried from the user's delivery service (see [user profile extension](mtp-deliveryservice-api.md#get-the-users-profile-extension)). As this information may change and depend on the delivery service, it MUST be requested from the delivery service directly.
+Additional to the user profile, the user profile extension can be queried from the user's delivery service (see [user profile extension](mtp-deliveryservice-api.md#get-the-users-profile-extension)). As this information may change and depend as well on the delivery service, it MUST be requested directly from the delivery service the message will be sent to.
 
 ### Key encoding
 
@@ -79,7 +81,7 @@ The delivery service profile MUST contain:
 
 * **Public Signing Key:** Key used to verify a postmark signature (see **UserProfile**).
 The key is presented as base64-encoded string of the key's bytes (see [key encoding](#key-encoding)).
-* **Public Encryption Key:** Key used to encrypt the delivery instructions (x25519-chacha20-poly1305).
+* **Public Encryption Key:** Public key used to create the key (together with the private key of the sender) to encrypt a message. As default, the algorithm **x25519-chacha20-poly1305** is used.
 The key is presented as base64-encoded string of the key's bytes (see [key encoding](#key-encoding)).
 * **Delivery Service URL:** URL pointing to the delivery service instance.
 

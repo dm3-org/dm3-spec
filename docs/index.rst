@@ -10,6 +10,7 @@ Contents:
 
    specification/overview
    specification/message-transport/mtp
+   specification/references
 
 
 Indices and tables
