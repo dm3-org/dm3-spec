@@ -122,10 +122,10 @@ The message data structure stores all data belonging to the message that can onl
 
 The message datastructure contains the following information:
 
-* **Message:** This string contains the actual message. For service messages (like READ_RECEIPT, RESEND_REQUEST, or DELETE_REQUEST), this field may be empty or undefined. The message MUST be **plain text** (UTF-8), optionally flavoured with **Markdown** highlightings.
+* **Message:** _(OPTIONAL)_ This string contains the actual message. For service messages (like READ_RECEIPT, RESEND_REQUEST, or DELETE_REQUEST), this field may be empty or undefined. The message MUST be **plain text** (UTF-8), optionally flavoured with **Markdown** highlightings.
 If other encodings of the message are provided, those MUST be attached as attachment (embedded with data scheme only), still providing the text representation in the message string. Clients able to interprete the encoded attachment may display this instead of the original message string. Others will visualize the message text as plain text or Markdown formatting.
 * **Metadata:** This object contains all meta information to the message. Some attributes are mandatory, others are optional. Also, application specific attributes can be added. The [MessageMetadata-Structure](#message-meta-data-structure) is described in detail below.
-* **Attachments:** Media or other files or special encodings of the message may be an attachment to a message, defined as array of URIs (data, https, ipfs). [Attachments](#attachments) are described in detail below.
+* **Attachments:** _(OPTIONAL)_ Media or other files or special encodings of the message may be an attachment to a message, defined as array of URIs (data, https, ipfs). [Attachments](#attachments) are described in detail below.
 * **Signature:** This is the signature with the sender's signature key on the SHA-256 hash of the message datastructure without the signature field.
 
 **DEFINITION:** Message Data Structure
@@ -138,7 +138,7 @@ If other encodings of the message are provided, those MUST be attached as attach
    // metadata added to the message.
    metadata: MessageMetadata,
    // message attachments e.g. images as array of URIs
-   // optional
+   // (optional)
    attachments?: string[],
    //the signature of the sender
    // sign( sha256( safe-stable-stringify( struct_without_sig ) ) )
@@ -154,7 +154,7 @@ The **message meta data structure** contains the following information:
 
 * **To:** The ENS name the message is sent to.
 * **From:** The ENS name of the sender
-* **Timestamp:** The timestamp (unixtime) when the message was created.
+* **Timestamp:** The timestamp (unixtime in milliseconds) when the message was created.
 * **Type:** Different types of messages can be sent. A **dm3** compatible messenger may not support all types in the UI but must at least handle not interpreted types meaningful (_example: the messenger doesn't support editing existing messages. It appends messages with the type **EDIT** as new messages at the bottom of the conversation_).
   * **NEW:** A new message.
   * **DELETE_REQUEST:** _(OPTIONAL)_ This is a service message. The sender wants the referenced message deleted. The value **referenceMessageHash** points to the message to be deleted. If receiver's messenger doesn't support deletion of messages, it may ignore the message.
@@ -219,13 +219,13 @@ Applications may optionally support other encodings than text/markdown for the m
 
 ## Encryption Envelope Data Structure
 
-The encryption envelope is the data structure which is sent to the delivery service. It contains delivery metadata and the encrypted message itself. The envelope is read and interpreted by the delivery service. However, the actual message is encrypted with the receivers key and signed with the senders key so that it cannot be read or altered by the delivery service.
+The encryption envelope is the data structure which is sent to the delivery service. It contains delivery metadata and the encrypted message itself. The envelope is read and interpreted by the delivery service. However, the actual message is encrypted based on the receivers key and signed with the senders key so that it cannot be read or altered by the delivery service.
 
 The encryption envelope contains the following data:
 
 * **Message:** The encrypted message ([Message Data Structure](#message-data-structure)).
 * **Metadata:** This object contains all meta information to the envelope. Some attributes are mandatory, others are optional. Also, application specific attributes can be added. The [EnvelopeMetadata Structure](#envelope-metadata-structure) is described in detail below.
-* **Postmark:** A data struct with the information of the delivery status. It is added by the delivery service and is encrypted with the public key of the receiver.
+* **Postmark:** _(OPTIONAL)_ A data struct with the information of the delivery status. Postmark is empty/undefined when the sender is sending the envelope to the delivery service. It is added by the delivery service and is encrypted based on the public key of the receiver.
 
 **DEFINITION:** Encryption Envelope Structure
 
@@ -238,7 +238,7 @@ The encryption envelope contains the following data:
   metadata: EnvelopeMetadata,
   // contains information added by the delivery service
   // encrypted with receiver public encryption key
-  postmark: Postmark,
+  postmark?: Postmark,
 }
 ```
 
@@ -249,7 +249,7 @@ The **envelope metadata structure** stores all meta information belonging to an 
 The **envelope metadata structure** contains the following data:
 
 * **Version:** The protocol version of **dm3**.
-* **Encryption Algorithm:** The used encryption and signing algorithm. Default is **x25519-chacha20-poly1305**. If this field is not set (undefinded), the default is being used.
+* **Encryption Scheme:** The used encryption and signing algorithms. Default is **x25519-chacha20-poly1305**. If this field is not set (undefinded), the default is being used.
 * **Delivery Information:** A data struct with the delivery information needed by the delivery service (message meta data).
 
 **DEFINITION:** Envelope Metadata Structure
@@ -258,9 +258,9 @@ The **envelope metadata structure** contains the following data:
 {
   // dm3 protocol version (e.g., 1.0)
   version: string,
-  // used encryption algorithm
+  // used encryption scheme
   //optional: if not set, the default x25519-chacha20-poly1305 is taken
-  encryption?: string,
+  encryptionScheme?: string,
   // datastruct with delivery info
   deliveryInformation: DeliveryInformation,
   // any kind of additional metadata may be added. 
@@ -303,7 +303,7 @@ The postmark data structure contains information added by the delivery service r
 It contains the following information:
 
 * **Massage Hash:** the Hash (SHA-256) of the entire message.
-* **Incoming Timestamp:** The unix time when the delivery service received the message.
+* **Incoming Timestamp:** The unix time in milliseconds when the delivery service received the message.
 * **Delivery Information:** This is a copy of the delivery information provided in the envelope. As this info in the envelope is encrypted for the delivery service, it MUST be added from the delivery service to the postmark. The receiver can use this information to check, if the sender of the message referenced in the [Message Metadata](#message-metadata-structure)) is the same as referenced in the envelope.
 * **Signature:** the signature of the postmark from the delivery service. This is needed to validate the postmark information.
 
