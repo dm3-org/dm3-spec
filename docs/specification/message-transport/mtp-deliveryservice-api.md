@@ -27,11 +27,39 @@ EncryptionEnvelope
 ### Response
 
 ```TypeScript
-success: boolean
+error: int
 ```
 
-The response is true if the delivery service received the envelope with the message. It is still ``true`` if the message does not fit the spam parameters (like minNonce or minBalance) and is rejected.
-The response is ``false`` if the envelope can't be opened and interpreted by the delivery service.
+The error value is **0** if the delivery service received the envelope with the message and processed the envelope correctly. If any error occures the error code is returned.
+
+**RPC Error Codes:**
+
+| Error code | Error text  | Description |
+|:---|:---|:---|
+| -32600 | Invalid Request | The JSON sent is not a valid Request object.|
+| -32601 | Method not found | The method does not exist / is not available.|
+| -32602 | Invalid params | Invalid method parameter(s).|
+| -32603 | Internal error | Internal JSON-RPC error.|
+| -32700 | Parse error | Invalid JSON was received by the server. An error occurred on the server while parsing the JSON text.|
+
+Additinal, application specific error codes can be reported:
+
+| Error code | Error text  | Description |
+|:---|:---|:---|
+| -32000 | Invalid input | Missing or invalid parameters.|
+| -32001 | Resource not found | Requested resource not found.|
+| -32002 | Resource unavailable | Requested resource not available.|
+| -32003 | Unautorized | The caller was not autorized to call this method.|
+| -32004 | Method not supported | Method is not implemented.|
+| -32005 | Limit exceeded | Request exceeds defined limit.|
+| -32006 | JSON-RPC version not supported | Version of JSON-RPC protocol is not supported.|
+
+If the message is rejected from the delivery service, the following error codes will be returned:
+
+| Error code | Error text  | Description |
+|:---|:---|:---|
+| -32050 | Spam | The sender's address didn't fit to the requirered spam protection settings.|
+| -32051 | Too big | The size of the message exeeds the approved maximum size.|
 
 ## Get Properties of the Delivery Service
 
@@ -110,7 +138,7 @@ The sender MUST NOT send unsupported messages, as the receiver will not accept t
   minBalanceTokenAddress: string,
   // Request of a specific encryption scheme.
   // (optional)
-  encryptionScheme: string[],
+  encryptionScheme?: string[],
   // List of supported message types
   supportedMessageTypes: string[],
 }

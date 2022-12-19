@@ -224,7 +224,7 @@ The encryption envelope is the data structure that is sent to the delivery servi
 The encryption envelope contains the following data:
 
 * **Message:** The encrypted message ([Message Data Structure](#message-data-structure)).
-* **Metadata:** This object contains all meta information about the envelope. Some attributes are mandatory, others are optional. Also, application-specific attributes can be added. The [EnvelopeMetadata Structure](#envelope-metadata-structure) is described in detail below.
+* **Metadata:** This object contains all meta information about the envelope. Some attributes are mandatory, others are optional. Also, application-specific attributes can be added. The [EnvelopeMetadata Structure](#envelope-metadata-structure) is described in detail below. This is encrypted based on the delivery service' encryption key ([Envelope Metadata Structure](#envelope-metadata-structure))
 * **Postmark:** _(OPTIONAL)_ A data struct with the information on the delivery status. Postmark is empty/undefined when the sender is sending the envelope to the delivery service. It is added by the delivery service and is encrypted based on the public key of the receiver.
 
 **DEFINITION:** Encryption Envelope Structure
@@ -237,8 +237,8 @@ The encryption envelope contains the following data:
   // meta information for the envelope
   metadata: EnvelopeMetadata,
   // contains information added by the delivery service
-  // encrypted with receiver public encryption key
-  postmark?: Postmark,
+  // encrypted based on receiver's public encryption key
+  postmark?: string,
 }
 ```
 
@@ -258,11 +258,12 @@ The **envelope metadata structure** contains the following data:
 {
   // dm3 protocol version (e.g., 1.0)
   version: string,
-  // used encryption scheme
+  // used encryption scheme of the message
   //optional: if not set, the default x25519-chacha20-poly1305 is taken
   encryptionScheme?: string,
   // datastruct with delivery info
-  deliveryInformation: DeliveryInformation,
+  // Delivery information object, encrypted based on the delivery servics' encryption key
+  deliveryInformation: string,
   // any kind of additional metadata may be added. 
   // This might be information needed by protocol extensions or app-specific meta information.
   ...
