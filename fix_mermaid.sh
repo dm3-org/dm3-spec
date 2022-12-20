@@ -11,5 +11,5 @@ find $directory -name "*.md" -type f | while read file
 do
   # Print the filename
   echo $file
-  sed -i '' -e 's/mermaid/{mermaid}/g' $file
+  sed -i 's/mermaid/{mermaid}/g' $file
 done
