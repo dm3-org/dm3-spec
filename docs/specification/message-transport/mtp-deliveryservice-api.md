@@ -2,6 +2,8 @@
 
 For more detailed information about delivery services, see the [appendix](mtp-appendix.md#appendix). Relevant to DM3MTP (protocol) is the API to deliver messages (encrypted envelopes) only.
 
+The delivery service is a JSON-RPC service, following the JSON-RPC 2.0 specification (see also [**[RPC1]**](../references.md)).
+
 To accept incoming messages, the delivery service MUST support the following JSON-RPC methods:
 
 ## Submit Message
@@ -26,21 +28,23 @@ EncryptionEnvelope
 
 ### Response
 
-```TypeScript
-error: int
-```
+The response is as defined in the JSON-RPC specification. In case of an error, an error message is returned.
 
-The error value is **0** if the delivery service received the envelope with the message and processed the envelope correctly. If any error occures the error code is returned.
+> **Example**
+> ```TypeScript
+> {
+>  "jsonrpc": "2.0", 
+>  "error": {
+>    "code": -32600, 
+>    "message": "Invalid Request"
+>  }, 
+>  "id": null
+>}
+>```
 
-**RPC Error Codes:**
+#### Error codes
 
-| Error code | Error text  | Description |
-|:---|:---|:---|
-| -32600 | Invalid Request | The JSON sent is not a valid Request object.|
-| -32601 | Method not found | The method does not exist / is not available.|
-| -32602 | Invalid params | Invalid method parameter(s).|
-| -32603 | Internal error | Internal JSON-RPC error.|
-| -32700 | Parse error | Invalid JSON was received by the server. An error occurred on the server while parsing the JSON text.|
+For default JSON-RPC error codes see [appendix](mtp-appendix.md#rpc-error-codes).
 
 Additinal, application specific error codes can be reported:
 
@@ -58,8 +62,8 @@ If the message is rejected from the delivery service, the following error codes 
 
 | Error code | Error text  | Description |
 |:---|:---|:---|
-| -32050 | Spam | The sender's address didn't fit to the requirered spam protection settings.|
-| -32051 | Too big | The size of the message exeeds the approved maximum size.|
+| -32010 | Spam | The sender's address didn't fit to the requirered spam protection settings.|
+| -32011 | Too big | The size of the message exeeds the approved maximum size.|
 
 ## Get Properties of the Delivery Service
 
@@ -90,6 +94,8 @@ A sender MUST check this property before sending the message, otherwise, the mes
     sizeLimit: number; 
 }
 ```
+
+In case of an error, an error object is returned as described in [error codes](#error-codes).
 
 ## Get the User's Profile Extension
 
@@ -154,3 +160,5 @@ The sender MUST NOT send unsupported messages, as the receiver will not accept t
 >    "supportedMesssageTypes": ["NEW","EDIT", "READ_RECEIPT","RESEND_REQUEST"],
 > }
 > ```
+
+In case of an error, an error object is returned as described in [error codes](#error-codes).

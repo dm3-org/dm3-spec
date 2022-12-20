@@ -26,3 +26,15 @@ A gateway can also provide multiple delivery service nodes as primary and fallba
 
 Although the dm3 protocol is fundamentally designed to use ENS as a central registry, the protocol can also be implemented on other chains. Name services similar to ENS can be used as a local registry in the ecosystem of this chain. For the entire dm3 ecosystem, this local registry can be directly integrated via CCIP (Cross Chain Interoperability Protocol) (and vice versa) so that interoperability can be established.
 A complementary extension will further simplify the handling of names of such local registries by automatic mapping of top-level domains (see top-level alias at [protocol extensions](../overview.md#protocol-extensions)).
+
+## RPC Error Codes
+
+Default error codes are specified in the [JSON-RPC specification](https://www.jsonrpc.org/specification).
+
+| Error code | Error text  | Description |
+|:---|:---|:---|
+| -32600 | Invalid Request | The JSON sent is not a valid Request object.|
+| -32601 | Method not found | The method does not exist / is not available.|
+| -32602 | Invalid params | Invalid method parameter(s).|
+| -32603 | Internal error | Internal JSON-RPC error.|
+| -32700 | Parse error | Invalid JSON was received by the server. An error occurred on the server while parsing the JSON text.|
