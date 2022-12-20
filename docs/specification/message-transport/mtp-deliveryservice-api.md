@@ -31,6 +31,7 @@ EncryptionEnvelope
 The response is as defined in the JSON-RPC specification. In case of an error, an error message is returned.
 
 > **Example**
+>
 > ```TypeScript
 > {
 >  "jsonrpc": "2.0", 
@@ -121,27 +122,16 @@ the_name
 
 The profileExtension contains configuration information of the receiver:
 
-* **Minimum Nonce:** _(OPTIONAL)_ The sender's address (address linked to the ENS domain) must have a nonce higher than this value, showing that this is a used account.
-* **Minimum Balance:** _(OPTIONAL)_ The sender's address holds more than a defined minimum in Ether or another token, as specified in Minimum Token Address.
-* **Minimum Balance Token Address:** If the balance is not defined in Ether, the address of the token contract needs to be declared. If Ether is used, this field stays empty or undefined.
 * **Encryption Scheme:** _(OPTIONAL)_ The default encryption scheme is **x25519-chacha20-poly1305**. If another encryption scheme needs to be used (e.g., because this is needed for an ecosystem that is integrated into **dm3**), this can be requested. The default algorithm MUST be accepted, too. Otherwise, it might be impossible for a sender to deliver a message when it doesn't support the requested algorithm.
 This is a list of supported schemes, sorted by importance. All listed algorithms MUST be supported by the receiver. The sender is free to choose but should use receiver's preferences if supported.
 * **Supported Message Types:** The receiver MUST provide a list of all **message types** that the client he/she uses is supporting (see [message data structure](mtp-transport.md#message_data_structure)).
 The message type **NEW** MUST be supported always and is set as default in case no information is delivered.
 The sender MUST NOT send unsupported messages, as the receiver will not accept those messages.
 
+Other information (like spam protection settings) can be added to this struct (defined in protocol extensions).
+
 ```JavaScript
 {
-  // the minimum nonce of the sender's address
-  // (optional)
-  minNonce: string,
-  // the minimum balance of the sender's address 
-  // (optional)
-  minBalance: string,
-  // token address, which should be evaluated. 
-  // Empty address means Ether balance.
-  // (optional)
-  minBalanceTokenAddress: string,
   // Request of a specific encryption scheme.
   // (optional)
   encryptionScheme?: string[],
@@ -154,8 +144,6 @@ The sender MUST NOT send unsupported messages, as the receiver will not accept t
 >
 > ```JavaScript
 > {
->    "minNonce":"1",
->    "minBalance":"1000000000000000000",
 >    "encryptionScheme": ["x25519-chacha20-poly1305"],
 >    "supportedMesssageTypes": ["NEW","EDIT", "READ_RECEIPT","RESEND_REQUEST"],
 > }

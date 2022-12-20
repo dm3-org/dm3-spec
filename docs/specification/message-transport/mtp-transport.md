@@ -224,7 +224,7 @@ The encryption envelope is the data structure that is sent to the delivery servi
 The encryption envelope contains the following data:
 
 * **Message:** The encrypted message ([Message Data Structure](#message-data-structure)).
-* **Metadata:** This object contains all meta information about the envelope. Some attributes are mandatory, others are optional. Also, application-specific attributes can be added. The [EnvelopeMetadata Structure](#envelope-metadata-structure) is described in detail below. This is encrypted based on the delivery service' encryption key ([Envelope Metadata Structure](#envelope-metadata-structure))
+* **Metadata:** This object contains all meta information about the envelope. Some attributes are mandatory, others are optional. Also, application-specific attributes can be added. The [EnvelopeMetadata Structure](#envelope-metadata-structure) is described in detail below.
 * **Postmark:** _(OPTIONAL)_ A data struct with the information on the delivery status. Postmark is empty/undefined when the sender is sending the envelope to the delivery service. It is added by the delivery service and is encrypted based on the public key of the receiver.
 
 **DEFINITION:** Encryption Envelope Structure
@@ -312,8 +312,7 @@ It contains the following information:
 
 ```JavaScript
 {
-  // if unencrypted sha256( safe-stable-stringify( EncryptionEnvelope.message ) ) 
-  // if encrypted sha256( EncryptionEnvelope.message ) 
+  // sha256( EncryptionEnvelope.message ) 
   messageHash: string,
   // timestamp of when the delivery service received the message
   incomingTimestamp: number,

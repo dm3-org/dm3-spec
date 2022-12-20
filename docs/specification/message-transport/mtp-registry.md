@@ -70,6 +70,7 @@ Additional to the user profile, the user profile extension can be queried from t
 Public keys published in the profiles are presented as base64-encoded strings of the key's bytes.
 
 > **Example** Key encoding
+>
 > ```JavaScript
 > Key = [134, 57, 101, ..., 167]
 > KeyString = "jjllMO...qc="
