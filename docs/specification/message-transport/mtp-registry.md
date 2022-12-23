@@ -5,7 +5,7 @@ A central (but decentralized) registry is needed where a **dm3** compatible app,
 * Public keys,
 * Links to delivery services.
 
-The **dm3** protocol uses **ENS (Ethereum Name Service)** as central registry. The following text records are used for this purpose:
+The **dm3** protocol uses **ENS (Ethereum Name Service)** as a central (but decentralized) registry. The following text records are used for this purpose:
 
 * `eth.dm3.profile`: User profile entry
 * `eth.dm3.deliveryService`: Delivery service profile entry
@@ -15,7 +15,7 @@ The text records MUST be a URI containing the profile JSON string defined below.
 The URI can be
 
 * A data scheme (_data:..._) or
-* A URL pointing to a profile JSON object (_https:... or ipfs:..._). To validate the integrity of the resolved profile JSON string, the URL MUST be a native IPFS URL or a URL containing a `dm3Hash` parameter containing the **SHA-256** hash of the JSON.
+* A URL pointing to a profile JSON object (_HTTPS:... or IPFS:..._). To validate the integrity of the resolved profile JSON string, the URL MUST be a native IPFS URL or a URL containing a `dm3Hash` parameter containing the **SHA-256** hash of the JSON.
 
 > **Example** `eth.dm3.profile` text record entries:
 >
@@ -24,21 +24,21 @@ The URI can be
 > * `ipfs://bafybeiemxf5abjwjz3e...vfyavhwq/`
 
 The profiles can only be changed by creating a new profile JSON and changing the corresponding text record via an Ethereum transaction (if published on layer-1). Storing this information on layer-2 or linked via CCIP ([Cross-Chain Interoperability Protocol](https://chain.link/cross-chain)) using subdomains, is possible, too.
-The specification thereof will be published in protocol extension **Layer-2 Registry Specification**. This is currently under development and will be published soon.
+The specification thereof will be published in the protocol extension **Layer-2 Registry Specification**. This is currently under development and will be published soon.
 
-Information read from ENS may be cached for perfomance reasons but the ENS TTL settings must be respected (to be fetched from the resolver).
+Information read from ENS may be cached for performance reasons but the ENS TTL settings must be respected (to be fetched from the resolver).
 
 ## User Profile
 
 The user profile MUST contain:
 
-* **Public Signing Key:** Key used to verify a message signature (ECDSA). The public signing key is the public key of an secp256k1 private/public key pair. How to generate or derive this key pair depends on the implementation of the client. The **Encryption and Signing Key Derivation Specification** proposes a method to derive those keys based of a signature of the wallet keys.
+* **Public Signing Key:** Key used to verify a message signature (ECDSA). The public signing key is the public key of a secp256k1 private/public key pair. How to generate or derive this key pair depends on the implementation of the client. The **Encryption and Signing Key Derivation Specification** proposes a method to derive those keys based on a signature of the wallet keys.
 The key is presented as base64-encoded string of the key's bytes (see [key encoding](#key-encoding)).
-* **Public Encryption Key:** Public key used to create the key (together with the private key of the sender) to encrypt a message. As default, the algorithm **x25519-chacha20-poly1305** is used (see [**[NIR1]**](../references.md)). If needed (e.g., for compatibility reasons with an integrated protocol), a different encryption can be specified in the [Profile Extension](mtp-deliveryservice-api.md#get-the-users-profile-extension). Nevertheless, to use the default encryption is highly recommended.
+* **Public Encryption Key:** Public key used to create the key (together with the private key of the sender) to encrypt a message. As default, the algorithm **x25519-chacha20-poly1305** is used (see [**[NIR1]**](../references.md)). If needed (e.g., for compatibility reasons with an integrated protocol), a different encryption can be specified in the [Profile Extension](mtp-deliveryservice-api.md#get-the-users-profile-extension). Nevertheless, using the default encryption is highly recommended.
 The key is presented as base64-encoded string of the key's bytes (see [key encoding](#key-encoding)).
 * **Delivery Service List:** List with at least one delivery service' ENS name[^1].
 
-[^1]: Information, how to adapt **dm3** for ecosystems not based on Ethereum, see appendix [Cross Chain Applications](mtp-appendix.md#cross-chain-applications).
+[^1]: For information, on how to adapt **dm3** for ecosystems not based on Ethereum, see appendix [Cross Chain Applications](mtp-appendix.md#cross-chain-applications).
 
 **DEFINITION:** UserProfile
 
@@ -70,6 +70,7 @@ Additional to the user profile, the user profile extension can be queried from t
 Public keys published in the profiles are presented as base64-encoded strings of the key's bytes.
 
 > **Example** Key encoding
+>
 > ```JavaScript
 > Key = [134, 57, 101, ..., 167]
 > KeyString = "jjllMO...qc="
@@ -85,7 +86,7 @@ The key is presented as base64-encoded string of the key's bytes (see [key encod
 The key is presented as base64-encoded string of the key's bytes (see [key encoding](#key-encoding)).
 * **Delivery Service URL:** URL pointing to the delivery service instance.
 
-As encryption algorithm for the delivery service, the default algorithm **x25519-chacha20-poly1305** is mandatory.
+As the encryption algorithm for the delivery service, the default algorithm **x25519-chacha20-poly1305** is mandatory.
 
 **DEFINITION:** DeliveryServiceProfile
 

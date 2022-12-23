@@ -1,0 +1,21 @@
+name: Release
+on: [workflow_dispatch]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: New branch
+        run: git checkout -b new-release
+      - name: Fix mermaid
+        run: sh ./fix_mermaid.sh
+      - name: Commit
+        run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+          git commit -am "new release"
+      - name: Push to another branch
+        run: |
+          git push https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git new-release:test-release --force
+
