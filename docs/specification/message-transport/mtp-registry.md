@@ -7,8 +7,8 @@ A central (but decentralized) registry is needed where a **dm3** compatible app,
 
 The **dm3** protocol uses **ENS (Ethereum Name Service)** as a central (but decentralized) registry. The following text records are used for this purpose:
 
-* `eth.dm3.profile`: User profile entry
-* `eth.dm3.deliveryService`: Delivery service profile entry
+* `dm3.profile`: User profile entry
+* `dm3.deliveryService`: Delivery service profile entry
 
 The text records MUST be a URI containing the profile JSON string defined below.
 
@@ -17,7 +17,7 @@ The URI can be
 * A data scheme (_data:..._) or
 * A URL pointing to a profile JSON object (_HTTPS:... or IPFS:..._). To validate the integrity of the resolved profile JSON string, the URL MUST be a native IPFS URL or a URL containing a `dm3Hash` parameter containing the **SHA-256** hash of the JSON.
 
-> **Example** `eth.dm3.profile` text record entries:
+> **Example** `dm3.profile` text record entries:
 >
 > * `data:application/json,{profile...`
 > * `https://delivery.dm3.network/profile/0xbcd6de065fd7...b3cc?dm3Hash=ab84f8...b50c8`
