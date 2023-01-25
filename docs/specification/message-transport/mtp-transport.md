@@ -44,7 +44,7 @@ If the profile record is not set, the message cannot be delivered. It has to sta
 3. Encrypt the message using the public encryption key of the receiver (part of the user profile). The default encryption algorithm is **x25519-chacha20-poly1305**. If a different algorithm is required (defined in the _ProfileExtension_), this should be used for encryption. If it is not supported by the sender, the default encryption is used.
 4. Encrypt the delivery information using the public encryption key of the delivery service (part of the delivery service profile). The mandatory encryption algorithm is **x25519-chacha20-poly1305**.
 
-```mermaid
+```{mermaid}
   sequenceDiagram
     participant AA as Alice' Client
     participant E as Registry (ENS)
@@ -86,7 +86,7 @@ If the profile record is not set, the message cannot be delivered. It has to sta
 4. Buffer message. The delivery service is responsible to store the encrypted message until the receiver picks it up. A delivery service may decide to have a max holding time. It must be at least 1 month. If the receiver didn't fetch the message within this time, the message may be deleted. This time can be queried from the [delivery service' properties](mtp-deliveryservice-api.md#get-properties-of-the-delivery-service)
 5. Optional: send notification(s) to the receiver that a message is waiting for delivery.
 
-```mermaid
+```{mermaid}
   sequenceDiagram
     actor A as Alice
     participant AA as Alice' Client
