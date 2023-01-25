@@ -15,7 +15,7 @@ Sending (and receiving) a message takes place in 3 steps, although only the firs
 
 **Get dm3 profile**
 
-1. Read the `eth.dm3.profile` text record of the receiver's ENS name.
+1. Read the `dm3.profile` text record of the receiver's ENS name.
 If the profile record is not set, the message cannot be delivered. It has to stay with the sender until the potential receiver publishes his/her profile.
 2. The content is specified as URI (Uniform Resource Identifier). The following types must be supported:
    1. **DATA:** The content is delivered as JSON. The data scheme MUST be `application/json`. Optionally, the JSON content is **base64** encoded. This must be specified as scheme extension `application/json;base64`. If not base64 encoded, the content might be URL-encoded.
@@ -31,7 +31,7 @@ If the profile record is not set, the message cannot be delivered. It has to sta
 
 3. Interprete JSON object as **dm3 profile**.
 4. Select the receiver's delivery service ENS name by reading the `deliveryServices` user profile entry at index `0`.
-   1. Get the `eth.dm3.deliveryService` text record of the delivery service's ENS name. The content is delivered as URI (data, HTTPS, or IPFS), as described above in point 2.
+   1. Get the `dm3.deliveryService` text record of the delivery service's ENS name. The content is delivered as URI (data, HTTPS, or IPFS), as described above in point 2.
    2. Interprete JSON object as **dm3 delivery service profile**.
 5. If the selected delivery service is unavailable, the sender MUST use the delivery service with the next higher index in the `deliveryServices` list as a fallback.
 
