@@ -49,9 +49,9 @@ If the profile record is not set, the message cannot be delivered. It has to sta
     participant AA as Alice' Client
     participant E as Registry (ENS)
     participant P as Profile Storage (e.g. IPFS)
-    AA->>E: get eth.dm3.profile for Bob's ENS name
-    E-->>AA: eth.dm3.profile text record
-    opt eth.dm3.profile text record is an URL
+    AA->>E: get dm3.profile for Bob's ENS name
+    E-->>AA: dm3.profile text record
+    opt dm3.profile text record is an URL
       AA->>P: query Bob's profile
       P-->>AA: profileRegistryEntry
       AA->>AA: check profileRegistryEntry integrity
@@ -59,9 +59,9 @@ If the profile record is not set, the message cannot be delivered. It has to sta
     AA->>AA: sign message
     AA->>AA: encrypt message
 
-    AA->>E: get eth.dm3.deliveryService of Bob's delivery service
-    E-->>AA: eth.dm3.deliveryService text record
-    opt eth.dm3.deliveryService text record is an URL
+    AA->>E: get dm3.deliveryService of Bob's delivery service
+    E-->>AA: dm3.deliveryService text record
+    opt dm3.deliveryService text record is an URL
       AA->>P: query delivery service profile 
       P-->>AA: deliveryServiceRegistryEntry
       AA->>AA: check deliveryServiceRegistryEntry integrity
