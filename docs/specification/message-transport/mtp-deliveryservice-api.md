@@ -70,7 +70,7 @@ If the message is rejected from the delivery service, the following error codes 
 
 A **delivery service** provides a set of properties that a sending client MUST evaluate and observe. These properties can be informative or define what the sender of a message must follow in order for the delivery service to accept the message at all.
 
-(_**compatibility information:** it replaces the formerly defined mutableProfileExtension provided in the `eth.dm3.profile`_)
+(_**compatibility information:** it replaces the formerly defined mutableProfileExtension provided in the `dm3.profile`_)
 
 ### Methode
 
@@ -100,7 +100,7 @@ In case of an error, an error object is returned as described in [error codes](#
 
 ## Get the User's Profile Extension
 
-Profile extensions are mutable properties of a receiver (identified by his/her ENS Name, ...) that are not stored in the `eth.dm3.profile` and can be changed without the need for a transaction. As these properties may vary between different delivery services, each delivery service to which the user is connected must provide this information.
+Profile extensions are mutable properties of a receiver (identified by his/her ENS Name, ...) that are not stored in the `dm3.profile` and can be changed without the need for a transaction. As these properties may vary between different delivery services, each delivery service to which the user is connected must provide this information.
 
 ### Methode
 
