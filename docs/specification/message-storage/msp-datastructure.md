@@ -26,9 +26,9 @@ This might be the file name, database identifier, or the section name of a file.
 
 The **conversations** list is the list of ENS-names of the conversation contacts. These are ENS domains or ENS subdomains with **dm3** profile (see [registry](../message-transport/mtp-registry.md)).
 
-**DEFINITION:** Root Block
-
 ``` TypeScript
+DEFINITION: Root Container
+
 {
     name: string,
     conversations: string[]
@@ -37,7 +37,7 @@ The **conversations** list is the list of ENS-names of the conversation contacts
 
 This list is encrypted with the user's storage encryption key.
 
-> Example: (unencrypted)
+> **Example:** (unencrypted)
 >
 > ``` TypeScript
 > {
@@ -64,9 +64,9 @@ A reference to a chunk is described by an identifier (incrementing, starting wit
 
 _**Note:** The timestamp can be used to find messages from a certain time period more easily without having to scann through all chunks._
 
-**DEFINITION:** Chunk Identifier
-
 ``` TypeScript
+DEFINITION: Chunk Identifier
+
 {
     // the chunk identifier, starting with 0
     id:   number,
@@ -77,9 +77,9 @@ _**Note:** The timestamp can be used to find messages from a certain time period
 
 The **chunks** list is the list of chunk identifiers describing the existig chunks. As chunks and messages are sorted in time, the last chunk in the list is the newest one and used to add a new message.
 
-**DEFINITION:** Conversations Container
-
 ``` TypeScript
+DEFINITION: Conversations Container
+
 {
     name: string,
     chunks: ChunkIdentifier[]
@@ -88,7 +88,7 @@ The **chunks** list is the list of chunk identifiers describing the existig chun
 
 This list is encrypted with the user's storage encryption key.
 
-> Example: (unencrypted)
+> **Example:** (unencrypted)
 >
 > ``` TypeScript
 > {
@@ -111,9 +111,9 @@ name = hash( $conversation.name + $conversation.chunks[$index] )
 
 The **messages** list contains the envelopes (see [Encryption Envelope Structure](../message-transport/mtp-transport.md#encryption-envelope-data-structure)) including the message. However, the fields encrypted during transmission are decrypted. The entire chunks container is subsequently encrypted with the storage encryption key.
 
-**DEFINITION:** Chunk Container
-
 ``` TypeScript
+DEFINITION: Chunk Container
+
 {
     name: string,
     messages: Envelope[]
@@ -133,7 +133,7 @@ _**Note:** The envelope with the message contains encrypted content during trans
 
 The messages list is encrypted with the user's storage encryption key.
 
-> Example: (unencrypted)
+> **Example:** (unencrypted)
 >
 > ``` TypeScript
 > {
