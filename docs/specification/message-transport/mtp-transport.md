@@ -44,7 +44,7 @@ If the profile record is not set, the message cannot be delivered. It has to sta
 3. Encrypt the message using the public encryption key of the receiver (part of the user profile). The default encryption algorithm is **x25519-chacha20-poly1305**. If a different algorithm is required (defined in the _ProfileExtension_), this should be used for encryption. If it is not supported by the sender, the default encryption is used.
 4. Encrypt the delivery information using the public encryption key of the delivery service (part of the delivery service profile). The mandatory encryption algorithm is **x25519-chacha20-poly1305**.
 
-```{mermaid}
+```mermaid
   sequenceDiagram
     participant AA as Alice' Client
     participant E as Registry (ENS)
@@ -86,7 +86,7 @@ If the profile record is not set, the message cannot be delivered. It has to sta
 4. Buffer message. The delivery service is responsible to store the encrypted message until the receiver picks it up. A delivery service may decide to have a max holding time. It must be at least 1 month. If the receiver didn't fetch the message within this time, the message may be deleted. This time can be queried from the [delivery service' properties](mtp-deliveryservice-api.md#get-properties-of-the-delivery-service)
 5. Optional: send notification(s) to the receiver that a message is waiting for delivery.
 
-```{mermaid}
+```mermaid
   sequenceDiagram
     actor A as Alice
     participant AA as Alice' Client
@@ -128,9 +128,9 @@ If other encodings of the message are provided, those MUST be attached as attach
 * **Attachments:** _(OPTIONAL)_ Media or other files or special encodings of the message may be an attachment to a message, defined as an array of URIs (data, HTTPS, IPFS). [Attachments](#attachments) are described in detail below.
 * **Signature:** This is the signature with the sender's signature key on the SHA-256 hash of the message data structure without the signature field.
 
-**DEFINITION:** Message Data Structure
-
 ```JavaScript
+DEFINITION: Message Data Structure
+
 {
    // message text
    // optional (not needed for messages of type READ_RECEIPT, DELETE_REQUEST, and RESEND_REQUEST)
@@ -166,9 +166,9 @@ The **message metadata structure** contains the following information:
 * **Reference Message Hash:** _(OPTIONAL)_ The hash of a previous message that the new one references. Must be set for message types (REPLY, DELETE_REQUEST, EDIT, REACTION, RESEND_REQUEST).
 * **Reply Delivery Instruction:** _(OPTIONAL)_ It is needed for compatibility reasons with other protocols/apps. The stored information MUST be delivered with any reply (e.g., a conversation or topic id, ...) as meta information of the [encryption envelope](#encryption-envelope-data-structure). It is neither evaluated nor altered from **dm3**.
 
-**DEFINITION:** Message Metadata Structure
-
 ```JavaScript
+DEFINITION: Message Metadata Structure
+
 {
    // receiver ens-name
    to: string,
@@ -227,9 +227,9 @@ The encryption envelope contains the following data:
 * **Metadata:** This object contains all meta information about the envelope. Some attributes are mandatory, others are optional. Also, application-specific attributes can be added. The [EnvelopeMetadata Structure](#envelope-metadata-structure) is described in detail below.
 * **Postmark:** _(OPTIONAL)_ A data struct with the information on the delivery status. Postmark is empty/undefined when the sender is sending the envelope to the delivery service. It is added by the delivery service and is encrypted based on the public key of the receiver.
 
-**DEFINITION:** Encryption Envelope Structure
-
 ```JavaScript
+DEFINITION: Encryption Envelope Structure
+
 {
   // the message 
   // encrypted based on the receiver's public encryption key
@@ -252,9 +252,9 @@ The **envelope metadata structure** contains the following data:
 * **Encryption Scheme:** The used encryption and signing algorithms. The default is **x25519-chacha20-poly1305**. If this field is not set (undefined), the default is being used.
 * **Delivery Information:** A data struct with the delivery information needed by the delivery service (message metadata).
 
-**DEFINITION:** Envelope Metadata Structure
-
 ```JavaScript
+DEFINITION: Envelope Metadata Structure
+
 {
   // dm3 protocol version (e.g., 1.0)
   version: string,
@@ -283,9 +283,9 @@ The data structure contains the following information:
 * **From:** the ENS name of the sender
 * **Delivery Instruction:** this is optional information. It is needed for compatibility reasons with other protocols/apps. The stored information (e.g., a conversation or topic id, ...) will be delivered with any reply from the receiver. It is neither evaluated nor altered from **dm3**.
 
-**DEFINITION:** Delivery Information
-
 ```JavaScript
+DEFINITION: Delivery Information
+
 {
   // receiver ens-name
   to: string,
@@ -308,9 +308,9 @@ It contains the following information:
 * **Delivery Information:** This is a copy of the delivery information provided in the envelope. As this info in the envelope is encrypted for the delivery service, it MUST be added from the delivery service to the postmark. The receiver can use this information to check if the sender of the message referenced in the [Message Metadata](#message-metadata-structure)) is the same as referenced in the envelope.
 * **Signature:** the signature of the postmark from the delivery service. This is needed to validate the postmark information.
 
-**DEFINITION:** Postmark
-
 ```JavaScript
+DEFINITION: Postmark
+
 {
   // sha256( EncryptionEnvelope.message ) 
   messageHash: string,
