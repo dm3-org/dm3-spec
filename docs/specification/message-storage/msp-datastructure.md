@@ -8,7 +8,7 @@ The data is structured in such a way that fast access with low overhead to speci
 
 The information containers are clustered in 3 types of data:
 
-* **Root:** The root container contains a list of all conversations. A conversation is specified as a collection of messages between 2 users. For each communication partner a conversation is stored. There is exactly 1 root container. The list of conversations is encrypted (with the user's storage encryption key).
+* **Root:** The root container contains a list of all conversation IDs. A conversation is specified as a collection of messages between 2 users. For each communication partner a conversation is stored. There is exactly one root container per user. The list of conversations is encrypted (with the user's storage encryption key).
 * **Conversations:** A conversation container contains a list of chunks, where the actual messages are stored. Each list entry, the chunk identifier, contains the chunk's id and the timestamp of the first message of the chunk. The list of chunks is encrypted (with the user's storage encryption key).
 * **Chunks:** Each chunk container holds a list of messages. Those messages are sorted in time. Each chunk can contain a different number of messages. The number is determined by the absolute size of the chunk. The stored messages are encrypted (with the user's storage encryption key).
   
