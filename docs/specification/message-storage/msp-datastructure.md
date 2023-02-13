@@ -40,7 +40,6 @@ This list is encrypted with the user's storage encryption key.
 >
 > ``` TypeScript
 > {
->    "name": "84780e15b9d...949c1de5",
 >    "conversations":  
 >    [
 >       "friend1.ens",
