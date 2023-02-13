@@ -134,7 +134,6 @@ The messages list is encrypted with the user's storage encryption key.
 >
 > ``` TypeScript
 > {
->    "name": "a3b8d0e3bc19a...aa3b1de3",
 >    "messages":  
 >    [
 >       { "message": {...}, "metadata": {...}, ...},
