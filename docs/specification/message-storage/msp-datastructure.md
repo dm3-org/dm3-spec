@@ -104,7 +104,7 @@ This list is encrypted with the user's storage encryption key.
 The **name** of a `chunks` container is defined as SHA-256 hash of the combination of the name of the conversations container `$conversation.name` and the chunk identifier, which is listed in the conversation's container's chunks list (represented by `$conversation` as the current conversations container and the chunk identifier `$conversation.chunks[$index]` at the `$index` of the list).
 
 ``` TypeScript
-name = hash( $conversation.name + $conversation.chunks[$index] )
+name = sha256( $conversation.name + $conversation.chunks[$index] )
 ```
 
 The **messages** list contains the envelopes (see [Encryption Envelope Structure](../message-transport/mtp-transport.md#encryption-envelope-data-structure)) including the message. However, the fields encrypted during transmission are decrypted. The entire chunks container is subsequently encrypted with the storage encryption key.
