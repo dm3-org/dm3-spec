@@ -113,7 +113,6 @@ The **messages** list contains the envelopes (see [Encryption Envelope Structure
 DEFINITION: Chunk Container
 
 {
-    name: string,
     messages: Envelope[]
 }
 ```
