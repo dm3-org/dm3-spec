@@ -30,7 +30,6 @@ The **conversations** list is the list of ENS-names of the conversation contacts
 DEFINITION: Root Container
 
 {
-    name: string,
     conversations: string[]
 }
 ```
