@@ -19,7 +19,7 @@ The information containers are clustered in 3 types of data:
 The **name** of the `root` container is defined as SHA-256 hash of the signature of the user's ENS-name (represented by `$own_ens_name`).
 
 ``` TypeScript
-name = hash( signature( $own_ens_name ))
+name = sha256( signature( $own_ens_name ))
 ```
 
 This might be the file name, database identifier, or the section name of a file.
