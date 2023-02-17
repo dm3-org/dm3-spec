@@ -9,6 +9,6 @@ The following approaches are possible, although not the only ones.
 * **Cloud Storage:** The conversations are stored at a cloud service of the user (like Google drive). The information is stored fully encrypted. The user decides whether and/or which cloud service provider to use. The availability of the conversation data thus depends on the availability of the cloud service provider. Synchronization between different devices is easy as long as the cloud drive is accessable.
 * **dm3 Service Storage:** A special variant of cloud storage is the data service of a dm3 node (delivery service). As an optional service, this can offer the storage of encrypted conversations. To access the conversation history, the client must be connected to this delivery service. Synchronization between multiple delivery service nodes is optional.
 
-_[IMAGE to visualize storage]_
+_[IMAGE to visualize storage, tbd.]_
 
 For performance reasons, a client can/should cache current conversations so that it does not have to fetch the data from a possibly remote storage each time it is accessed. If additional data is needed (e.g. earlier parts of the communication history), it can be retrieved sequentially.
