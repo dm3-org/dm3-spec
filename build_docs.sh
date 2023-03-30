@@ -2,7 +2,7 @@
 cp -r ./docs ./_temp
 cd _temp
 
-#fix_mermaid.sh
+./../fix_mermaid.sh
 
 make html
 make singlehtml
