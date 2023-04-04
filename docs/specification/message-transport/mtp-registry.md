@@ -7,8 +7,8 @@ A central (but decentralized) registry is needed where a **dm3** compatible app,
 
 The **dm3** protocol uses **ENS (Ethereum Name Service)** as a central (but decentralized) registry. The following text records are used for this purpose:
 
-* `dm3.profile`: User profile entry
-* `dm3.deliveryService`: Delivery service profile entry
+* `network.dm3.profile`: User profile entry
+* `network.dm3.deliveryService`: Delivery service profile entry
 
 The text records MUST be a URI containing the profile JSON string defined below.
 
@@ -17,7 +17,7 @@ The URI can be
 * A data scheme (_data:..._) or
 * A URL pointing to a profile JSON object (_HTTPS:... or IPFS:..._). To validate the integrity of the resolved profile JSON string, the URL MUST be a native IPFS URL or a URL containing a `dm3Hash` parameter containing the **SHA-256** hash of the JSON.
 
-> **Example** `dm3.profile` text record entries:
+> **Example** `network.dm3.profile` text record entries:
 >
 > * `data:application/json,{profile...`
 > * `https://delivery.dm3.network/profile/0xbcd6de065fd7...b3cc?dm3Hash=ab84f8...b50c8`
@@ -40,9 +40,9 @@ The key is presented as base64-encoded string of the key's bytes (see [key encod
 
 [^1]: For information, on how to adapt **dm3** for ecosystems not based on Ethereum, see appendix [Cross Chain Applications](mtp-appendix.md#cross-chain-applications).
 
-**DEFINITION:** UserProfile
-
 ```JavaScript
+DEFINITION: UserProfile
+
 {
   // Key used to encrypt messages
   publicEncryptionKey: string,
@@ -88,9 +88,9 @@ The key is presented as base64-encoded string of the key's bytes (see [key encod
 
 As the encryption algorithm for the delivery service, the default algorithm **x25519-chacha20-poly1305** is mandatory.
 
-**DEFINITION:** DeliveryServiceProfile
-
 ```JavaScript
+DEFINITION: DeliveryServiceProfile
+
 {
   // Key used to sign postmarks
   publicSigningKey: string,

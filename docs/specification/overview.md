@@ -36,7 +36,7 @@ While the specification of the **Message Transport Protocol (DM3MTP)** focuses o
 The **dm3** delivery service and **dm3** compatible app implementations MAY also use the following **dm3** protocol extensions:
 
 * **Message Access Specification**: Specifies how received messages on a delivery service can be accessed.
-* **Message Storage Specification**: Specifies how messages are persisted after they are delivered.
+* **[Message Storage Specification](message-storage/msp.rst)**: Specifies how messages are persisted after they are delivered.
 * **Public Message Feed Specification**: Specifies how a public message feed is created and accessed.
 * **Intra Delivery Service Messaging Specification**: Specifies additional features for messaging if sender and receiver are using the same delivery service.
 * **Group Messaging Specification**: Specifies a protocol extension to enable group messaging.
