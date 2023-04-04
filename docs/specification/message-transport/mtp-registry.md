@@ -40,9 +40,9 @@ The key is presented as base64-encoded string of the key's bytes (see [key encod
 
 [^1]: For information, on how to adapt **dm3** for ecosystems not based on Ethereum, see appendix [Cross Chain Applications](mtp-appendix.md#cross-chain-applications).
 
-**DEFINITION:** UserProfile
-
 ```JavaScript
+DEFINITION: UserProfile
+
 {
   // Key used to encrypt messages
   publicEncryptionKey: string,
@@ -88,9 +88,9 @@ The key is presented as base64-encoded string of the key's bytes (see [key encod
 
 As the encryption algorithm for the delivery service, the default algorithm **x25519-chacha20-poly1305** is mandatory.
 
-**DEFINITION:** DeliveryServiceProfile
-
 ```JavaScript
+DEFINITION: DeliveryServiceProfile
+
 {
   // Key used to sign postmarks
   publicSigningKey: string,
