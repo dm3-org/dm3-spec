@@ -68,23 +68,24 @@ The list of messages is returned.
 }
 ```
 
-> **Example** Profile Exception:
+> **Example** Billboard Messages:
 >
 > ```JavaScript
 > {
 >    "messages": 
->    {
->       "id":"1",
->       "message":"message 1",
->       "time":16813115520000,
->       "0x12345...cdef"
->    },
->    {
->       "id":"2",
->       "message":"message 2",
->       "time":16813115560000,
->       "0xfEDcbA...321"
->    },
+>    [
+>      {
+>         "id":"1",
+>         "message":"message 1",
+>         "time":16813115520000,
+>         "0x12345...cdef"
+>      },{
+>         "id":"2",
+>         "message":"message 2",
+>         "time":16813115560000,
+>         "0xfEDcbA...321"
+>      },
+>    ]
 > }
 > ```
 
@@ -97,6 +98,35 @@ The data from the past are then retrieved and supplemented page by page as neede
 
 ## Retrieve List of Billboards
 
-...
+One billboard service can host multiple billboards. The list can be queried.
 
-dm3_billboard_listex
+### Methode
+
+This method is called to retrieve the list of available billboards.
+
+```TypeScript
+// call to request the list of available billboards
+dm3_billboard_list
+```
+
+### Response
+
+The list with the ENS-names containing the dm3 profile for each billboard is return.
+
+```JavaScript
+{
+  billboards: string[],
+}
+```
+
+> **Example** List of Billboards:
+>
+> ```JavaScript
+> {
+>    "billboards": 
+>    [
+>      "billboard01.billboards.example.eth",
+>      "billboard02.billboards.example.eth",
+>    ],
+> }
+> ```
