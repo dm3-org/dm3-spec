@@ -136,7 +136,7 @@ The list with the ENS-names containing the dm3 profile for each billboard is ret
 Each billboard is defined by a ENS name providing a **dm3** profile (see [dm3 profile](../message-transport/mtp-registry.md#user-profile)). While this profile contains all information needed for sending messages to the billboard, additinal information and properties can be requested from the billboard service.
 
 * **Name:** The name od the billboard. This name is shown in the billboard message viewer.
-* **Mediators:** Mediators have the task of moderating the chat conversation. They have the ability to block inappropriate comments (these will then no longer be delivered). They can also exclude users from the discussion. Then all their comments will not be delivered and they will not be able to post new comments. Mediators Mediators are defined by their address.
+* **Mediators:** Mediators have the task of moderating the chat conversation. They have the ability to block inappropriate comments (these will then no longer be delivered). They can also exclude users from the discussion. Then all their comments will not be delivered and they will not be able to post new comments. Mediators Mediators are defined by their ENS name. This name MUST contain a dm3 profile, publishing the public key for signatures.
 * **Minimum Waiting Time:** For each billboard, it is defined how long a participant has to wait after posting a comment before being allowed to post another comment. This ensures that the discussion is balanced and not dominated by individual participants.
 
 ```JavaScript
@@ -181,3 +181,51 @@ The list with the ENS-names containing the dm3 profile for each billboard is ret
 > }
 > ```
 
+## Delete/block an (inappropriate) Message
+
+Mediators have the task and the right to block or delete inappropriate content. The Billboard service provides a function to mark a particular message as to be deleted. This can only be done by the mediators defined in the Billboard service, confirming this authorization with a signature.
+
+Deleted messages will NOT any longer published by the [billboard service](bmp-client.md#billboard-service) but may kept in the database of the [billboard client](bmp-client.md#billboard-client), marked as blocked/deleted.
+
+### Methode
+
+This method is called to delete/block a message.
+
+```TypeScript
+// call to delete a message
+dm3_billboard_deleteMessage
+```
+
+### Request
+
+The request passes the **identifier** of the billboard and the  **identifier** of the message. Also, a signature of the mediator is passed to proof the autority to execute this function and to ensure traceability.
+
+* **idBillboard** The **id** of the billboard where a messages should be deleted.
+* **idMessage** The **id** of the message which should be deleted.
+* **signature** The signature of the above information, signed by the mediators signing key (defined in [**dm3** profile](../message-transport/mtp-registry.md#user-profile))
+
+```TypeScript
+// the id of the billboard
+idBillboard = <id of the billboard>
+// the id of the message to be deleted
+idMessage = <id of the message>
+// signature:  
+signature = sign(sha256(safe-stable-stringify(idBillboard+idMessage)))
+```
+
+### Response
+
+The response is as defined in the JSON-RPC specification. In case of an error, an error message is returned.
+
+> **Example**
+>
+> ```TypeScript
+> {
+>  "jsonrpc": "2.0", 
+>  "error": {
+>    "code": -32600, 
+>    "message": "Invalid Request"
+>  }, 
+>  "id": null
+>}
+>```
