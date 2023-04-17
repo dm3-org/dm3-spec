@@ -1,6 +1,6 @@
 # Billboard Service API
 
-The Billboard Service API provides the functions needed to retrieve the billboard information.
+The Billboard Service API provides the functions needed to retrieve the billboard information (like messages, ...).
 
 ## Retrieve the Billboard Messages
 
@@ -35,12 +35,12 @@ dm3_billboard_getMessages
 
 ### Request
 
-The request passes the **identifier** of the billboard and a description which messages must be returned. As messages may be paged, the information must be provided, which messages are already read. So it must be possible to fetch newest messeges first  get the older ones page by page, too.
+The request passes the **identifier** of the billboard and a description which messages must be returned. As messages may be paged, the information must be provided, which messages are already read. So it must be possible to fetch newest messeges first and get the older ones page by page, too.
 
 These parameters must be provided to define which messages should be returned:
 
 * **idBillboard** The **id** of the billboard which messages should be returned.
-* **idCurrentMessage** The **id** of the currently newest message. If older messages are fetched, `idCurrentMessage` is the last already fetched message. If `idCurrentMessage` is empty or undefined, the most current message is addressed (means: ).
+* **idCurrentMessage** The **id** of the currently newest message. If older messages are fetched, `idCurrentMessage` is the last already fetched message. If `idCurrentMessage` is empty or undefined, the most current message is addressed.
 * **idMessageCursor** The **id** of the newest message of the complete block. If `idMessageCursor` is empty or undefined, no messages are fetched and `idMessageCursor` is zero.
 
 ```TypeScript
@@ -53,7 +53,7 @@ idCurrentMessage? = <id of the newest fetched message>
 idMessageCursor? = <id of the latest message of the block>
 ```
 
-If `idCurrentMessage` is empty or undefined, the first page (`k` entries) of the newest messages of the billboard are returned. The viewer can request other pages (backwards) until the `idMessageCursor`is reached (then all messages are fetched). For performance reasons it may be appropriate to only fetch the first page starting with the newest message and additional pages only if needed.
+If `idCurrentMessage` is empty or undefined, the first page (`k` entries) of the newest messages of the billboard is returned. The viewer can request other pages (backwards) until the `idMessageCursor`is reached (then all messages are fetched). For performance reasons it may be appropriate to only fetch the first page starting with the newest message and additional pages only if needed.
 
 The fetching and paging process is visualized in the graph:
 ![image](fetch_messages.svg)
@@ -94,7 +94,7 @@ In case of an error, an error object is returned as described in [error codes](#
 ### Websocket connection
 
 Optionally, a websocket connection can established to retrieve updates via the direct connection to the billboard service.
-The data from the past are then retrieved and supplemented page by page as needed (such as initialization, scrolling into the past,...).
+The data from the past are then retrieved and supplemented page by page as needed (such as initialization, scrolling into the past,...). New messages are fetched directly using the websocket.
 
 ## Retrieve List of Billboards
 
@@ -135,8 +135,8 @@ The list with the ENS-names containing the dm3 profile for each billboard is ret
 
 Each billboard is defined by a ENS name providing a **dm3** profile (see [dm3 profile](../message-transport/mtp-registry.md#user-profile)). While this profile contains all information needed for sending messages to the billboard, additinal information and properties can be requested from the billboard service.
 
-* **Name:** The name od the billboard. This name is shown in the billboard message viewer.
-* **Mediators:** Mediators have the task of moderating the chat conversation. They have the ability to block inappropriate comments (these will then no longer be delivered). They can also exclude users from the discussion. Then all their comments will not be delivered and they will not be able to post new comments. Mediators Mediators are defined by their ENS name. This name MUST contain a dm3 profile, publishing the public key for signatures.
+* **Name:** The name od the billboard. This name may be shown in the billboard message viewer.
+* **Mediators:** Mediators have the task of moderating the chat conversation. They have the ability to delete/block inappropriate comments (these will then no longer be delivered). They can also exclude users from the discussion. Then all their comments will not be delivered and they will not be able to post new comments. Mediators Mediators are defined by their ENS name. This name MUST contain a dm3 profile, publishing the public key for signatures.
 * **Minimum Waiting Time:** For each billboard, it is defined how long a participant has to wait after posting a comment before being allowed to post another comment. This ensures that the discussion is balanced and not dominated by individual participants.
 
 ```JavaScript
@@ -211,6 +211,52 @@ idBillboard = <id of the billboard>
 idMessage = <id of the message>
 // signature:  
 signature = sign(sha256(safe-stable-stringify(idBillboard+idMessage)))
+```
+
+### Response
+
+The response is as defined in the JSON-RPC specification. In case of an error, an error message is returned.
+
+> **Example**
+>
+> ```TypeScript
+> {
+>  "jsonrpc": "2.0", 
+>  "error": {
+>    "code": -32600, 
+>    "message": "Invalid Request"
+>  }, 
+>  "id": null
+>}
+>```
+
+## Suspend Sender
+
+Mediators have the task and the right to block or delete inappropriate content. If a sender repeatedly sends messages that need to be deleted, the mediator can also ban this sender. This means that the sender is blacklisted from the delivery service, so that no more messages can be received from him. For this purpose the spam protection rules of DM3MTP are applied.
+
+All messages of blocked user are handled as deleted.
+
+### Methode
+
+This method is called to suspend a sender
+
+```TypeScript
+// call to suspend a sender
+dm3_billboard_suspendSender
+```
+
+### Request
+
+The request passes the ENS name of the to be suspended sender. Also, a signature of the mediator is passed to proof the autority to execute this function and to ensure traceability.
+
+* **blockedSender** The ENS name of the sender to be suspended.
+* **signature** The signature of the above information, signed by the mediators signing key (defined in [**dm3** profile](../message-transport/mtp-registry.md#user-profile))
+
+```TypeScript
+// the name of the blocked sender
+blockedSender = <ENS name of the sender>
+// signature:  
+signature = sign(sha256(blockedSender))
 ```
 
 ### Response
