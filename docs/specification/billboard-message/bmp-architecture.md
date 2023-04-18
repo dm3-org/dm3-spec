@@ -20,7 +20,11 @@ Billboard messaging is based entirely on the [dm3 Message Transport Protocol](..
 The billboard message extension consists of the following components:
 
 * **Delivery Service(s):** These service(s) receive the messages/statements. The delivery serivce implements the dm3 message access protocol with the billboard extension to access all messages (not separated into conversations).
-* **Billboard client**
-* **Billboard service**
-* **Billboard Embedded Widget**
-* **Billboard Management Backend:** This service provides all functions needed to administrate the billboard, like configuration management, creation of billboards, management of ENS subdomains for virtual profiles (including CCIP integration into ENS Subdomain). 
+* **Registry:** The **dm3** registry based on ENS.
+* **Billboard Node:**
+  * **Billboard Client** The dm3 client receiving and managing messages.
+  * **Billboard Service** The cloud service providing access to the billboard's messages.
+  * **Billboard Management Backend:** This service provides all functions needed to administrate the billboard, like configuration management, creation of billboards, management of ENS subdomains for virtual profiles (including CCIP integration into ENS Subdomain).
+* **Billboard Embedded Widget** The UI component to be embedded in the app.
+
+![image](components.svg)

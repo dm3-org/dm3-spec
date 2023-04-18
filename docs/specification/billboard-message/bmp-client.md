@@ -2,7 +2,7 @@
 
 The **Billboard Client** is a hosted service that fetches messages directed to it as statements from the corresponding delivery service(s) using the extended **dm3 Message Access Protocol (DM3MAP)** and collects them as a list of statements. The messages are not managed as separate conversations with individual participants, but as a list of statements sorted by the time they were received.
 
-Each billboard has it's own ENS name with **dm3** profile. This can be a subdomain where data is organized off-chain and linked using [CCIP](https://chain.link/cross-chain)(Cross Chain Interoperability Protocol) or it can be a separated ENS domain with a published **dm3** profile.
+Each billboard has it's own ENS name with **dm3** profile. This can be a subdomain where data is organized off-chain and linked using [CCIP](https://chain.link/cross-chain) (Cross Chain Interoperability Protocol) or it can be a separated ENS domain with a published **dm3** profile.
 
 The client is designed to receive the statements only, as it does not send direct responses to the participants. It serves as database for the billboard service which provides the [API](bmp-service-api.md) to access the messages.
 
