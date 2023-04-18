@@ -4,6 +4,20 @@ For more detailed information about delivery services, see the [appendix](mtp-ap
 
 The delivery service is a JSON-RPC service, following the JSON-RPC 2.0 specification (see also [**[RPC1]**](../references.md)).
 
+- [API Delivery-Service (Incoming Messages)](#api-delivery-service-incoming-messages)
+  - [Submit Message](#submit-message)
+    - [Methode](#methode)
+    - [Request](#request)
+    - [Response](#response)
+      - [Error codes](#error-codes)
+  - [Get Properties of the Delivery Service](#get-properties-of-the-delivery-service)
+    - [Methode](#methode-1)
+    - [Response](#response-1)
+  - [Get the User's Profile Extension](#get-the-users-profile-extension)
+    - [Methode](#methode-2)
+    - [Request](#request-1)
+    - [Response](#response-2)
+  
 To accept incoming messages, the delivery service MUST support the following JSON-RPC methods:
 
 ## Submit Message

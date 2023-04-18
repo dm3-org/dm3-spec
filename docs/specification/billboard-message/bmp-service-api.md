@@ -2,6 +2,9 @@
 
 The Billboard Service API provides the functions needed to retrieve the billboard information (like messages, ...).
 
+The billboard service is a JSON-RPC service, following the JSON-RPC 2.0 specification (see also [RPC1]).
+
+
 - [Billboard Service API](#billboard-service-api)
   - [Retrieve the Billboard Messages](#retrieve-the-billboard-messages)
     - [Methode](#methode)
