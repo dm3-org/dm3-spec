@@ -201,6 +201,8 @@ The list with the ENS-names containing the dm3 profile for each billboard is ret
 > }
 > ```
 
+In case of an error, a RPC error message is returned.
+
 ## Delete/block an (inappropriate) Message
 
 Mediators have the task and the right to block or delete inappropriate content. The Billboard service provides a function to mark a particular message as to be deleted. This can only be done by the mediators defined in the Billboard service, confirming this authorization with a signature.
@@ -253,6 +255,8 @@ The response is as defined in the JSON-RPC specification. In case of an error, a
 >}
 >```
 
+In case of an error, a RPC error message is reurned.
+
 ## Suspend Sender
 
 Mediators have the task and the right to block or delete inappropriate content. If a sender repeatedly sends messages that need to be deleted, the mediator can also ban this sender. This means that the sender is blacklisted from the delivery service, so that no more messages can be received from him. For this purpose the spam protection rules of DM3MTP are applied.
@@ -301,3 +305,39 @@ The response is as defined in the JSON-RPC specification. In case of an error, a
 >  "id": null
 >}
 >```
+
+## Get active viewers
+
+Active viewers are instances retrieving the billboard messages. This number is displayed in the billboard embedded widget. 
+
+### Methode
+
+This method is called retrieve the number ob active viewers.
+
+```TypeScript
+// call to retrieve number of active viewers
+dm3_billboard_countActiveViewers
+```
+
+### Request
+
+The request passes the **identifier** of the billboard.
+
+- **idBillboard** The **id** of the billboard.
+
+```TypeScript
+// the ENS name of the billboard
+idBillboard = <ENS name of the billboard>
+```
+
+### Response
+
+The number of active viewers is returned.
+
+```JavaScript
+{
+  viewers: Number,
+}
+```
+
+In case of an error, an error message is returned.
