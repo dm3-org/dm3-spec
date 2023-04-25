@@ -144,7 +144,9 @@ The list with the ENS-names containing the dm3 profile for each billboard is ret
 >
 > ```JavaScript
 > {
->    "billboards": 
+>      "jsonrpc": "2.0",
+>      "id": "1", 
+>      "result":
 >    [
 >      "billboard01.billboards.example.eth",
 >      "billboard02.billboards.example.eth",
