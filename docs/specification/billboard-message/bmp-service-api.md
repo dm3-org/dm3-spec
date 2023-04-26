@@ -157,7 +157,7 @@ The list with the ENS-names containing the dm3 profile for each billboard is ret
 Each billboard is defined by a ENS name providing a **dm3** profile (see [dm3 profile](../message-transport/mtp-registry.md#user-profile)). While this profile contains all information needed for sending messages to the billboard, additinal information and properties can be requested from the billboard service.
 
 - **Name:** The name od the billboard. This name may be shown in the billboard message viewer.
-- **Mediators:** Mediators have the task of moderating the chat conversation. They have the ability to delete/block inappropriate comments (these will then no longer be delivered). They can also exclude users from the discussion. Then all their comments will not be delivered and they will not be able to post new comments. Mediators Mediators are defined by their ENS name. This name MUST contain a dm3 profile, publishing the public key for signatures.
+- **Mediators:** Mediators have the task of moderating the chat conversation. They have the ability to delete/block inappropriate comments (these will then no longer be delivered). They can also exclude users from the discussion. Then all their comments will not be delivered and they will not be able to post new comments. Mediators are defined by their ENS name. This name MUST contain a dm3 profile, publishing the public key for signatures.
 - **Minimum Waiting Time:** For each billboard, it is defined how long a participant has to wait after posting a comment before being allowed to post another comment. This ensures that the discussion is balanced and not dominated by individual participants. This is enforced by the UI only.
 
 ```JavaScript

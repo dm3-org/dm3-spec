@@ -6,6 +6,6 @@ Billboard Message Protocol (DM3BMP)
 
    bmp   
    bmp-architecture
-   bmp-client
+   bmp-node
    bmp-service-api
    bmp-ui
