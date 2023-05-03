@@ -62,8 +62,42 @@ This process is triggered by pressing the button "Proof your wallet address". As
 
 Once the user has logged in (e.g. with Sign In With Ethereum), the user's **seed** and **address** are passed to the component and participation mode is enabled. Here the user can send his statements as messages to the billboard. This is done according to **dm3** standard by sending an envelope with an encrypted message to the billboard.
 
-If a minimum waiting time is defined by the billboard service (see properties), the user must wait this time before he can send a message again. 
+If a minimum waiting time is defined by the billboard service (see properties), the user must wait this time before he can send a message again.
 
 ![image](ui_logged_in_validated_waiting_after_sending.svg)
 
 ### Moderator
+
+Moderation of a discussion is necessary when inappropriate or improper statements are made. The list of authorized moderators (their ENS names) is provided by the Billboard Service.
+The billboard ui componente recognizes a moderator if he is logged in via SIWE and his address is assigned to a moderator.
+
+In this case the component offers a button to join conversation as a moderator.
+
+![image](ui_logged_in_moderator_not_loggedin.svg)
+
+#### Join as Moderator
+
+To join as a moderator, a signature needs to be provided:
+
+**TEXT to be SIGNED:**
+
+> dm3 billboard chat moderator:
+> Billboard-ID=[ens-name of the billboard]
+> You are assigned to be a moderator of this
+> discussion (e.g., deleting other statements).
+> Please sign this message to activate the
+> moderation view in the chat.
+> Important: No transaction is sent to the
+> blockchain. No fees have to be paid.
+
+Afer signing this message, the moderation view is activated. This provides the moderator with the option to delete inappropriate statements (via the delete button next to the message).
+
+![image](ui_logged_in_moderator_loggedin.svg)
+
+If a statement is marked for deletion, the delete button is changed to a recovery button where the moderator has for 15s to cancel the deletion.
+
+![image](ui_logged_in_moderator_deleted.svg)
+
+Only after this time, the [API function](bmp-service-api.md#deleteblock-an-inappropriate-message) is called to delete the message.
+
+If a user sends multiple messages that need to be deleted by the moderators, the UI can also provide an option to permanently ban that user. This is done via the [API function](bmp-service-api.md#suspend-sender).
