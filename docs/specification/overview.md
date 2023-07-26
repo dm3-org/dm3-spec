@@ -45,7 +45,8 @@ The **dm3** delivery service and **dm3** compatible app implementations MAY also
 * **Spam Protection Specification**: Specifies additional methods, based on web3 technology, that prevent spam on the receiver's side.
 * **Layer-2 Registry Specification**: Specifies how to include a layer-2 or cross-chain registry into subdomains to extend the general registry
 * **Top-Level Alias Specification**: Specifies how subdomains can be mapped to non-ENS-top-level domains. This is needed for instance for cross-chain interoperability.
-
+* **Limited Scope Profile Specification**: Specifies the handlig of subprofiles (for instance at in-app-messaging solutions). Those profiles can be temporary or anonymous profiles.
+  
 ![image](packages.svg)
 
 _The specifications for the protocol extensions are still in draft status and will be published soon._
