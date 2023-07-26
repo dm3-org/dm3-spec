@@ -4,6 +4,20 @@ For more detailed information about delivery services, see the [appendix](mtp-ap
 
 The delivery service is a JSON-RPC service, following the JSON-RPC 2.0 specification (see also [**[RPC1]**](../references.md)).
 
+- [API Delivery-Service (Incoming Messages)](#api-delivery-service-incoming-messages)
+  - [Submit Message](#submit-message)
+    - [Methode](#methode)
+    - [Request](#request)
+    - [Response](#response)
+      - [Error codes](#error-codes)
+  - [Get Properties of the Delivery Service](#get-properties-of-the-delivery-service)
+    - [Methode](#methode-1)
+    - [Response](#response-1)
+  - [Get the User's Profile Extension](#get-the-users-profile-extension)
+    - [Methode](#methode-2)
+    - [Request](#request-1)
+    - [Response](#response-2)
+  
 To accept incoming messages, the delivery service MUST support the following JSON-RPC methods:
 
 ## Submit Message
@@ -47,14 +61,14 @@ The response is as defined in the JSON-RPC specification. In case of an error, a
 
 For default JSON-RPC error codes see [appendix](mtp-appendix.md#rpc-error-codes).
 
-Additinal, application specific error codes can be reported:
+Additional, application specific error codes can be reported:
 
 | Error code | Error text  | Description |
 |:---|:---|:---|
 | -32000 | Invalid input | Missing or invalid parameters.|
 | -32001 | Resource not found | Requested resource not found.|
 | -32002 | Resource unavailable | Requested resource not available.|
-| -32003 | Unautorized | The caller was not autorized to call this method.|
+| -32003 | Unauthorized | The caller was not authorized to call this method.|
 | -32004 | Method not supported | Method is not implemented.|
 | -32005 | Limit exceeded | Request exceeds defined limit.|
 | -32006 | JSON-RPC version not supported | Version of JSON-RPC protocol is not supported.|
@@ -63,8 +77,8 @@ If the message is rejected from the delivery service, the following error codes 
 
 | Error code | Error text  | Description |
 |:---|:---|:---|
-| -32010 | Spam | The sender's address didn't fit to the requirered spam protection settings.|
-| -32011 | Too big | The size of the message exeeds the approved maximum size.|
+| -32010 | Spam | The sender's address didn't fit the required spam protection settings.|
+| -32011 | Too big | The size of the message exceeds the approved maximum size.|
 
 ## Get Properties of the Delivery Service
 

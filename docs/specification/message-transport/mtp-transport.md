@@ -262,7 +262,7 @@ DEFINITION: Envelope Metadata Structure
   //optional: if not set, the default x25519-chacha20-poly1305 is taken
   encryptionScheme?: string,
   // datastruct with delivery info
-  // Delivery information object, encrypted based on the delivery servics' encryption key
+  // Delivery information object, encrypted based on the delivery services' encryption key
   deliveryInformation: string,
   // any kind of additional metadata may be added. 
   // This might be information needed by protocol extensions or app-specific meta information.

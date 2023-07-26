@@ -73,7 +73,7 @@ DEFINITION: Chunk Identifier
 }
 ```
 
-The **chunks** list is the list of chunk identifiers describing the existig chunks. As chunks and messages are sorted in time, the last chunk in the list is the newest one and used to add a new message.
+The **chunks** list is the list of chunk identifiers describing the existing chunks. As chunks and messages are sorted in time, the last chunk in the list is the newest one and used to add a new message.
 
 ``` TypeScript
 DEFINITION: Conversations Container
@@ -117,7 +117,7 @@ DEFINITION: Chunk Container
 
 The size of the chunks is defined by the maximum size. The maximum size is defined by the client.
 
-**Recomentation:**
+**Recommendation:**
 
 * minimum: 500kB,
 * maximum: 10MB.
@@ -126,7 +126,7 @@ A chunk must contain at least one message. Empty chunks are not created.
 
 _**Note:** The envelope with the message contains encrypted content during transmission (end-to-end encryption). The decrypted information is used for storage so that the sender's public key is not required again to decrypt the data for future use._
 
-_**Note:** The maximum size of a chunk must be bigger or equal to the maximum size of a message defined by the delivery service (see [maxium message size](../message-transport/mtp-deliveryservice-api.md#get-properties-of-the-delivery-service))._
+_**Note:** The maximum size of a chunk must be bigger or equal to the maximum size of a message defined by the delivery service (see [maximum message size](../message-transport/mtp-deliveryservice-api.md#get-properties-of-the-delivery-service))._
 
 The messages list is encrypted with the user's storage encryption key.
 
