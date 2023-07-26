@@ -61,14 +61,14 @@ The response is as defined in the JSON-RPC specification. In case of an error, a
 
 For default JSON-RPC error codes see [appendix](mtp-appendix.md#rpc-error-codes).
 
-Additinal, application specific error codes can be reported:
+Additional, application specific error codes can be reported:
 
 | Error code | Error text  | Description |
 |:---|:---|:---|
 | -32000 | Invalid input | Missing or invalid parameters.|
 | -32001 | Resource not found | Requested resource not found.|
 | -32002 | Resource unavailable | Requested resource not available.|
-| -32003 | Unautorized | The caller was not autorized to call this method.|
+| -32003 | Unauthorized | The caller was not authorized to call this method.|
 | -32004 | Method not supported | Method is not implemented.|
 | -32005 | Limit exceeded | Request exceeds defined limit.|
 | -32006 | JSON-RPC version not supported | Version of JSON-RPC protocol is not supported.|
@@ -77,8 +77,8 @@ If the message is rejected from the delivery service, the following error codes 
 
 | Error code | Error text  | Description |
 |:---|:---|:---|
-| -32010 | Spam | The sender's address didn't fit to the requirered spam protection settings.|
-| -32011 | Too big | The size of the message exeeds the approved maximum size.|
+| -32010 | Spam | The sender's address didn't fit the required spam protection settings.|
+| -32011 | Too big | The size of the message exceeds the approved maximum size.|
 
 ## Get Properties of the Delivery Service
 
