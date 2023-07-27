@@ -3,3 +3,5 @@
 .DS_Store
 docs/_build/
 _build/
+.vscode/
+
