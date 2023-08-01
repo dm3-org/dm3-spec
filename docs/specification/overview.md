@@ -31,7 +31,7 @@ Required contact information such as public encryption keys and public keys to v
 
 ## Protocol Extensions
 
-While the specification of the **Message Transport Protocol (DM3MTP)** focuses on a standardized format description for general messages and how to deliver those messages to a delivery service defined in the receiver's **dm3** profile, several optional protocol extensions are defined to cover further topics.
+While the specification of the **[Message Transport Protocol (DM3MTP)](message-transport)** focuses on a standardized format description for general messages and how to deliver those messages to a delivery service defined in the receiver's **dm3** profile, several optional protocol extensions are defined to cover further topics.
 
 The **dm3** delivery service and **dm3** compatible app implementations MAY also use the following **dm3** protocol extensions:
 
@@ -46,7 +46,8 @@ The **dm3** delivery service and **dm3** compatible app implementations MAY also
 * **Spam Protection Specification**: Specifies additional methods, based on web3 technology, that prevent spam on the receiver's side.
 * **Layer-2 Registry Specification**: Specifies how to include a layer-2 or cross-chain registry into subdomains to extend the general registry
 * **Top-Level Alias Specification**: Specifies how subdomains can be mapped to non-ENS-top-level domains. This is needed for instance for cross-chain interoperability.
-
+* **[Limited Scope Profile Specification](limited-scope-profiles/lsp.rst)**: Specifies the handlig of subprofiles (for instance at in-app-messaging solutions). Those profiles can be temporary or anonymous profiles.
+  
 ![image](packages.svg)
 
 _The specifications for the protocol extensions are still in draft status and will be published soon._
