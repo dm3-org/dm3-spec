@@ -59,14 +59,46 @@ For this purpose new message types are introduced (see [Message Metadata Structu
 * **LSP_LINK:** _(OPTIONAL)_ This is a service message. The sender (LSP) wants to link a [Limited Scope Profile (LSP)](../limited-scope-profiles/lsp.rst) with this profile. The receiving app must allow the user to accept or reject a link request. If the app does not support this message, a user cannot connect his LSP and manage the communication in his inbox.
 * **LSP_LINK_ACCEPT:** _(OPTIONAL)_ This is a service message. The sender (Main Profile) signals that the link request is approved.
 
+For linking, additional metadata fields are defined to transfer the required information:
+
+* **LSP Private Key:** The local private key of the LSP needs to be revealed to the **Main Profile**. It is needed by the Main Profile to generate the keys to decrypt the LSP conversation. Also, the keys are used to recover LSPs.
+* **LSP Link Message:** The **Link Message** which needs to be signed by the user's wallet. Together with the signature it is needed to verify the ownership of the wallet and prevent unautorized tries to connect.
+* **LSP Wallet Signature:** This signature by the wallet's key is needed to proof the ownership of the address. Signed is the **Link Message**.
+
+**DEFINITION Link Message**
+
+> Connect your local profile with your dm3 account:
+> [your_ens_name]
+>
+> (There is no paid transaction initiated.
+> The signature is used offcain only.)
+> 
+> URI: [dapp initiating the connection]
+> Version: 1
+> Chain ID: 1
+> Nonce: [...]
+> Issued At: [date_time]
+
 ```JavaScript
 DEFINITION: Message Metadata Structure
 
 {
    ...
    // specifies the message type
-   type: ... | "LINK_LSP"
+   type: ... | "LSP_LINK" | "LSP_LINK_ACCEPT" 
    ...
+   LSP: {
+      // the LSP private key
+      privateKey: string,
+      // the link message
+      linkMessage: string
+      // signature of the wallet (LSP) or signature key (main profile)
+      // sign( sha256( linkMessage) )
+      signature: string
+   }
 }
 ```
 
+To connect a **LSP** to another **dm3 Profile**, a service message from the type LSP_LINK with the filled data structure LSP in Message Metadata is sent to the profile to connect to. The **Message** filed of the **Envelope** is empty or may contain an fallback message informing that this is a service message only.
+
+As result of the received service message, the receiving messenger app initiated a user interaction to inform about the linking attempt. If the user agrees, a **LSP_LINK_ACCEPT** service message is returned, containing as LSP.linkMessage the ENS-name of the LSP and the signature of the main profile's signature key. 
