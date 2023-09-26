@@ -1,4 +1,4 @@
-# Workflow
+# Limited Scope Profiles
 
 ## What are limited Scope Profiles
 
@@ -29,7 +29,54 @@ The profiles are given a virtual ENS name which is the wallet address as subdoma
 > 0x1234...789.addr.myapp.eth
 > ```
 
-```[IMAGE dApp infrastructure and dm3 DS]```
+### Workflow to create a LSP by signing a message:
+
+```mermaid
+  sequenceDiagram
+
+    participant DM3 as DM3-Widget
+    participant W as Wallet
+    participant LIB as DM3-Lib-Lsp
+    participant DS as DM3-Delivery Service
+    participant OR as DM3-Offchain Resolver
+
+    DM3 ->> W: signCreateProfileMessage()
+    LIB-->LIB:createLspWallet(createProfileSig)
+    LIB-->LIB:createProfile(addr,createProfileSig)
+    LIB-->>DS: getDeliveryServiceToken(lspWallet)
+    LIB-->>OR: claimAddress(lspWallet)
+    LIB-->>OR: claimSubdomain(lspWallet,lspName,ownerAddr,authSig)
+    LIB-->>DS: submitUserProfile(lspName,lspProfile)
+
+```
+
+### Workflow to create an LSP embedded in  another dApp
+
+```mermaid
+  sequenceDiagram
+    participant DAPP as dApp
+    participant W as DM3-Widget
+    participant LIB as DM3-Lib-Lsp
+    participant DS as DM3-Delivery Service
+    participant OR as DM3-Offchain Resolver
+
+    DAPP ->> W: props(authMessage,ownerAddr,authSig,appId,entropy)
+    W->>OR: lspExists(appID,ownerAddr)
+    opt lsp.owner.appId.dm3.eth has not a limited Scope profile yet
+        W->>LIB: createNewLsp(ownerAddr,appId,entropy)
+            LIB-->LIB:createLspWallet(entropy)
+            LIB-->LIB:createProfile(ownerAddr,lspWallet)
+            LIB-->>OR: claimAddress(lspWallet)
+            LIB-->>OR: claimSubdomain(lspWallet,lspName,ownerAddr,authSig)
+            LIB-->>DS: submitUserProfile(lspName,lspProfile)
+    end
+    opt lsp.owner.appId.dm3.eth has already a profile
+    W ->> DS: request privateKey for LspWallet(appId,ownerAddr)
+    LIB-->LIB:recreateProfile(ownerAddr,lspWallet)
+    LIB-->>DS: getDeliveryServiceToken(lspWallet)
+    end
+
+```
 
 ## Usage of the Limited Scope Profile
 
@@ -65,9 +112,9 @@ For linking, additional metadata fields are defined to transfer the required inf
 * **LSP Link Message:** The **Link Message** which needs to be signed by the user's wallet. Together with the signature it is needed to verify the ownership of the wallet and prevent unautorized tries to connect.
 * **LSP Wallet Signature:** This signature by the wallet's key is needed to proof the ownership of the address. Signed is the **Link Message**.
 
-**DEFINITION Link Message**
+### Definition Link Message
 
-> Connect your local profile with your dm3 account:
+> Link your local profile with your dm3 account:
 > [your_ens_name]
 >
 > (There is no paid transaction initiated.
@@ -78,6 +125,8 @@ For linking, additional metadata fields are defined to transfer the required inf
 > Chain ID: 1
 > Nonce: [...]
 > Issued At: [date_time]
+
+### Extension of Message Metadata Structure
 
 ```JavaScript
 DEFINITION: Message Metadata Structure
@@ -99,6 +148,34 @@ DEFINITION: Message Metadata Structure
 }
 ```
 
+### Workflow: Link
+
 To connect a **LSP** to another **dm3 Profile**, a service message from the type LSP_LINK with the filled data structure LSP in Message Metadata is sent to the profile to connect to. The **Message** filed of the **Envelope** is empty or may contain an fallback message informing that this is a service message only.
 
-As result of the received service message, the receiving messenger app initiated a user interaction to inform about the linking attempt. If the user agrees, a **LSP_LINK_ACCEPT** service message is returned, containing as LSP.linkMessage the ENS-name of the LSP and the signature of the main profile's signature key. 
+As result of the received service message, the receiving messenger app initiated a user interaction to inform about the linking attempt. If the user agrees, a **LSP_LINK_ACCEPT** service message is returned, containing as LSP.linkMessage the ENS-name of the LSP and the signature of the main profile's signature key.
+
+```mermaid
+  sequenceDiagram
+    participant LSP as Limited Scope Profile App
+    participant DS1 as Delivery Service (LSP)
+    participant DS2 as Delivery Service (Main Profile)
+    participant DM3 as DM3-compatible Messenger (Main Profile)
+    participant USER as User
+   
+    USER-->>LSP: Requests Linkage to Main Profile
+    LSP->>DS2: Send Message (LSP_LINK)
+    DM3-->>DS2: Request new Messages
+    DS2->>DM3: Deliver Message (LSP_LINK)
+    DM3-->>USER: Requests Approval for Linkage
+    USER-->>DM3: Approves Linkage
+    DM3-->>DM3: Stores LSP keys  
+    DM3->>DS1: Send Message (LSP_LINK_ACCEPT)
+    LSP-->>DS1: Request new Messages
+    DS1->>LSP: Deliver Message (LSP_LINK_ACCEPT)
+    LSP-->>LSP: Publishes Link Info in Profile
+
+```
+
+## Profile Recovery
+
+As **Limited Scope Profiles

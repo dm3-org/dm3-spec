@@ -2,7 +2,7 @@
   sequenceDiagram
 
     participant DM3 as DM3-Widget
-    participant W as Ethereum Wallet
+    participant W as Wallet
     participant LIB as DM3-Lib-Lsp
     participant DS as DM3-Delivery Service
     participant OR as DM3-Offchain Resolver
