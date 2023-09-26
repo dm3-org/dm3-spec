@@ -5,4 +5,5 @@ Limited Scope Profiles (DM3LSP)
    :maxdepth: 2
    
    lsp-overview
-   lsp-architecture
+   lsp-profiles
+   lsp-linked

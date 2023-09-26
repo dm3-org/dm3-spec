@@ -134,7 +134,7 @@ DEFINITION: Message Metadata Structure
 {
    ...
    // specifies the message type
-   type: ... | "LSP_LINK" | "LSP_LINK_ACCEPT" 
+   type: ... | "LSP_LINK" | "LSP_LINK_ACCEPT"
    ...
    LSP: {
       // the LSP private key
@@ -152,30 +152,89 @@ DEFINITION: Message Metadata Structure
 
 To connect a **LSP** to another **dm3 Profile**, a service message from the type LSP_LINK with the filled data structure LSP in Message Metadata is sent to the profile to connect to. The **Message** filed of the **Envelope** is empty or may contain an fallback message informing that this is a service message only.
 
-As result of the received service message, the receiving messenger app initiated a user interaction to inform about the linking attempt. If the user agrees, a **LSP_LINK_ACCEPT** service message is returned, containing as LSP.linkMessage the ENS-name of the LSP and the signature of the main profile's signature key.
+As result of the received service message, the receiving messenger app initiated a user interaction to inform about the linking attempt. If the user agrees, an **LSP_LINK_ACCEPT** service message is returned, containing as LSP.linkMessage the ENS-name of the LSP and the signature of the main profile's signature key.
 
 ```mermaid
   sequenceDiagram
+    actor USER as User
+    participant WALLET as Wallet
+
+    box LSP App
     participant LSP as Limited Scope Profile App
     participant DS1 as Delivery Service (LSP)
+    end
+    
+    box Main dm3 App
     participant DS2 as Delivery Service (Main Profile)
     participant DM3 as DM3-compatible Messenger (Main Profile)
-    participant USER as User
+    end
    
     USER-->>LSP: Requests Linkage to Main Profile
+    LSP -->> WALLET: Request Signature to Link-Message
+    WALLET -->> USER: Request Signature to Link-Message
+    USER -->> LSP: Signature (to Link-Message)
     LSP->>DS2: Send Message (LSP_LINK)
+    note over LSP,DS2: includes: Link-Message, Signature, LSP Private Key 
+    DS2->>DS2: Cache Message
+   
     DM3-->>DS2: Request new Messages
-    DS2->>DM3: Deliver Message (LSP_LINK)
+    DS2->>+DM3: Deliver Message (LSP_LINK)
+    DM3-->>DM3: Check <br> if LSP does not exist 
     DM3-->>USER: Requests Approval for Linkage
     USER-->>DM3: Approves Linkage
     DM3-->>DM3: Stores LSP keys  
-    DM3->>DS1: Send Message (LSP_LINK_ACCEPT)
+    DM3->>-DS1: Send Message (LSP_LINK_ACCEPT)
+    note over DM3,DS1: includes: Name of linked LSP, Signature
+    DS1->>DS1: Cache Message
+   
     LSP-->>DS1: Request new Messages
-    DS1->>LSP: Deliver Message (LSP_LINK_ACCEPT)
-    LSP-->>LSP: Publishes Link Info in Profile
+    DS1->>+LSP: Deliver Message (LSP_LINK_ACCEPT)
+    LSP-->>-LSP: Publishes Link Info in Profile (LSP)
 
 ```
 
 ## Profile Recovery
 
-As **Limited Scope Profiles
+As **Limited Scope Profiles** often are used for embedded messaging components in dApps, it can be easy for users to access the same dApp on different devices or in a different browser or browser context. Then it is not possible to automatically generate the same private keys. The user can easily use another anonymous profile, but this one is independent and not linked to the initial profile.
+However, once users have connected the LSP to their main profile, they can use it to recover the LSP's private key.
+
+This is executed by sending another **LSP_LINK** to the Main Profile, but without setting the metadata LSP.privateKey. But the signed **Link Message** must be sent as verification.
+If the Main Profile receives such a message (without private key), which is already registered as a link, it transmits the private key in the response message (**LSP_LINK_ACCEPT**).
+
+```mermaid
+  sequenceDiagram
+    actor USER as User
+    participant WALLET as Wallet
+
+    box LSP App
+    participant LSP as Limited Scope Profile App
+    participant DS1 as Delivery Service (LSP)
+    end
+    
+    box Main dm3 App
+    participant DS2 as Delivery Service (Main Profile)
+    participant DM3 as DM3-compatible Messenger (Main Profile)
+    end
+   
+    LSP -->> WALLET: Request Signature to Link-Message
+    WALLET -->> USER: Request Signature to Link-Message
+    USER -->> LSP: Signature (to Link-Message)
+    
+    LSP->>DS2: Send Message (LSP_LINK)
+    note over LSP,DS2: includes: Link-Message, Signature 
+    DS2->>DS2: Cache Message
+   
+    DM3-->>DS2: Request new Messages
+    DS2->>+DM3: Deliver Message (LSP_LINK)
+    DM3-->>DM3: Check <br> if LSP already exists  
+   
+    DM3->>-DS1: Send Message (LSP_LINK_ACCEPT)
+    note over DM3,DS1: includes: Name of linked LSP, Signature, LSP Private key
+    DS1->>DS1: Cache Message
+   
+    LSP-->>DS1: Request new Messages
+    DS1->>+LSP: Deliver Message (LSP_LINK_ACCEPT)
+    LSP-->>LSP: Stores LSP Private Key
+    LSP-->>-LSP: Publishes Link Info in Profile (LSP)
+
+```
