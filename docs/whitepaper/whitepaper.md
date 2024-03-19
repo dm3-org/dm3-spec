@@ -29,14 +29,42 @@ Anchored by the DM3MTP (dm3 message transfer protocol), dm3 protocol acts as a l
 
 Central to the dm3 protocol's ethos is the empowerment of users. By offering a range of features designed to maximize user autonomy, dm3 ensures that individuals retain control over their data, messages, and communication preferences. This liberation extends to the choice of messaging applications that align with individual needs, thereby dismantling the limitations associated with platform confinement.
 
-In essence, the dm3 protocol represents a paradigm shift in communication. By seamlessly integrating self-sovereign identity, encryption, and interoperability, dm3 upholds users' autonomy and control while enabling the creation of a decentralized messaging ecosystem. As the dm3 protocol embodies the principles of web3, users are invited to explore a new era of messaging that places them at the centre of their digital interactions.
+In essence, the dm3 protocol represents a paradigm shift in communication. By seamlessly integrating self-sovereign identity, encryption, and interoperability, dm3 upholds users' autonomy and control while enabling the creation of a decentralized messaging ecosystem. As the dm3 protocol embodies the principles of web3, users are invited to explore a new era of messaging that places them at the centre of their digital interactions. 
 
 
 ## 2. Market
+### 2.1. Market size (potential users)
+In the ever-evolving realm of communication, messaging has emerged as a cornerstone of digital interactions. With the proliferation of modern messaging platforms, the number of active users has surged, illustrating the integral role these tools play in our interconnected world.
 
-2.1. Market size (potential users)
-2.2. Market share (competitors/key players)
-2.3. Advantages of dm3 protocol
+**2.1.1 The Current Landscape**
+As we peer into the present, it's evident that messaging platforms have etched themselves into the lives of over a quarter of the global population. Around 26% of individuals ([source](https://www.similarweb.com/blog/research/market-research/worldwide-messaging-apps/)) are engaged with one or more messaging platforms, ranging from household names like WhatsApp, Facebook Messenger, Telegram, Viber, Line, to Snapchat. Leading this pack is WhatsApp, boasting 2.7 billion monthly active users ([source](https://www.bankmycell.com/blog/number-of-whatsapp-users/)), closely followed by Facebook Messenger with 931 million ([source](https://www.bankmycell.com/blog/number-of-facebook-messenger-users/)), and Telegram with 700 million monthly active users ([source](https://www.bankmycell.com/blog/number-of-telegram-users/)).
+
+**2.1.2.Transitioning to Protected and Confidential Communication**
+In a world where the metaverse increasingly hosts our interactions, this user base is poised to grow even further. This shift isn't just about expanding numbers; it's about users seeking alternatives that offer the promise of genuine privacy and security. They yearn for communication where they retain true ownership of their conversations, away from the prying eyes of centralized entities.
+
+While the messaging landscape is currently dominated by centralized giants, the emergence of web3 players is signaling a new wave of possibilities. These players, rooted in blockchain technology, are pioneering the path to decentralized, secure, and private communication.
+
+**2.1.3. The Potential of Blockchain**
+When delving into potential users who are already adopting chat and email services built upon blockchain technology, we uncover intriguing insights. More than 80 million crypto wallet users had been created by 2022 ([source](https://www.statista.com/statistics/647374/worldwide-blockchain-wallet-users/)), underscoring the growing interest in blockchain-based solutions. Within this cohort, a noteworthy 449,918 wallets were actively engaged on the Ethereum blockchain as of June 2023 ([source](https://www.demandsage.com/blockchain-statistics/)), highlighting the Ethereum network's prominence.
+
+As a protocol deeply integrated with the Ethereum Name Service (ENS), dm3 protocol's reach aligns with the Ethereum ecosystem. ENS, reporting over 50 thousand monthly active users in September 2022 ([source](https://messari.io/report/state-of-ens-q3-2022)), solidifies the Ethereum blockchain as a stronghold for potential dm3 users.
+
+
+### 2.2. Advantages of the dm3 Protocol in the Web3 Messaging Landscape 
+In the rapidly evolving messaging landscape, the dm3 protocol distinguishes itself by introducing several key advantages that change the way we communicate in the web3 era. These advantages usher in a new era of privacy, security, and interoperability:
+
+- **Interoperable Standard with Privacy Focus**
+At the heart of the dm3 protocol lies a mission to connect disparate messaging systems through a standardized, interoperable protocol. It emphasizes self-sovereign communication while preserving privacy and security. This focus on interoperability ensures that dm3 can seamlessly integrate with various messaging platforms, creating a unified messaging experience that spans across services.
+
+- **Chain-Agnostic Approach**
+dm3 takes a chain-agnostic approach. This flexibility allows the protocol to adapt and function across different blockchain networks, ensuring widespread adoption without constraints.
+
+- **Comprehensive Scalability and Performance**
+dm3 can handle a large number of users and messages without compromising on responsiveness. This scalability is vital as it accommodates the rapid growth of the web3 community while maintaining a seamless user experience.
+
+- **Modular Design and Extensions**
+The dm3 protocol embraces a modular design, allowing for the incorporation of various extensions and optional features. This adaptability tailors its functionalities to diverse messaging needs, from private peer-to-peer conversations to group communication.
+
 
 ## 3. Communication as a Public Good
 
@@ -45,10 +73,15 @@ In essence, the dm3 protocol represents a paradigm shift in communication. By se
 3.3. Inclusivity and Accessability
 
 ## 4. dm3 protocol
+### 4.1. Value proposition/Technology
+dm3 protocol provides a decentralized, end-to-end encrypted messaging protocol for Web3, aiming to bridge interoperability gaps across platforms without compromising security, privacy, or user experience, thereby transforming the messaging ecosystem for a connected and self-sovereign communication future
 
-4.1. Value proposition/Technology
-4.2. Mission
-4.3. Vision
+### 4.2. Mission
+Our mission sets the stage for a new era of communication in Web3 by breaking down the barriers set by centralized Web2 platforms and establishing new standards for user-centric, self-sovereign communication.
+
+### 4.3. Vision
+We see a world where individuals communicate freely and securely, where privacy is upheld as a fundamental right, and where the power dynamics of centralized platforms are rebalanced in favor of users.
+
 4.4. Base Architecture
 4.4.1. Blockchain layer
 4.4.2. Protocol layer
@@ -85,7 +118,6 @@ In essence, the dm3 protocol represents a paradigm shift in communication. By se
 5.2.2. Community
 
 ## 6. Roadmap
-
 6.1. Timeline with development milestones (only mention)
 6.2. Key updates and releases (brief description)
 
